@@ -23,7 +23,7 @@ export default function AdminHeader({ title, onMenuClick }: Props) {
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-white bg-red-500" />
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-card bg-destructive" />
         </button>
       </div>
     </header>

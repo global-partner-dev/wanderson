@@ -88,7 +88,7 @@ export default function LoginForm() {
             </div>
             <button
               type="submit"
-              className="h-11 w-full rounded-lg border-0 bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95"
+              className="gradient-primary h-11 w-full rounded-lg border-0 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95"
             >
               Log in
             </button>

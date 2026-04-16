@@ -89,6 +89,7 @@
   --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
   --color-sidebar-border: hsl(var(--sidebar-border));
   --color-sidebar-muted: hsl(var(--sidebar-muted));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
@@ -149,5 +150,80 @@ body {
   }
   .gradient-info {
     background: linear-gradient(135deg, hsl(199 89% 48%), hsl(210 90% 55%));
+  }
+}
+
+/* Refer-aligned surfaces for admin (tables, KPIs, nav affordances) */
+@layer components {
+  .refer-table-wrap {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    box-shadow: var(--shadow-card);
+  }
+  .refer-table {
+    width: 100%;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: hsl(var(--muted-foreground));
+  }
+  .refer-thead {
+    border-bottom: 1px solid hsl(var(--border));
+    background-color: hsl(var(--muted) / 0.5);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+  .refer-kpi {
+    border-radius: var(--radius-lg);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+  }
+  .refer-kpi-accent {
+    border-radius: var(--radius-lg);
+    border: 1px solid hsl(var(--border));
+    border-left-width: 4px;
+    background-color: hsl(var(--card));
+    padding: 1.25rem;
+    box-shadow: var(--shadow-card);
+  }
+  .refer-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    border: 0;
+    background: linear-gradient(135deg, hsl(222 100% 64%), hsl(252 90% 65%));
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-card);
+    transition: opacity 0.15s ease;
+  }
+  .refer-btn-primary:hover {
+    opacity: 0.95;
+  }
+  .refer-btn-outline {
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    box-shadow: var(--shadow-card);
+    transition: background-color 0.15s ease;
+  }
+  .refer-btn-outline:hover {
+    background-color: hsl(var(--muted) / 0.5);
   }
 }

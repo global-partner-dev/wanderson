@@ -88,7 +88,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/signup"
-              className="rounded-full border-0 bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm"
+              className="gradient-primary rounded-full border-0 px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm"
             >
               Sign up
             </Link>
@@ -133,7 +133,7 @@ export default function HomePage() {
                 </Link>
                 <Link
                   href="/signup"
-                  className="rounded-lg bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] py-2.5 text-center text-sm font-semibold text-primary-foreground"
+                  className="gradient-primary rounded-lg py-2.5 text-center text-sm font-semibold text-primary-foreground"
                   onClick={() => setMobileOpen(false)}
                 >
                   Sign up
@@ -173,7 +173,7 @@ export default function HomePage() {
               <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
                 <Link
                   href="/signup"
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full border-0 bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] px-6 text-base font-semibold text-primary-foreground shadow-md"
+                  className="gradient-primary inline-flex h-11 items-center justify-center gap-2 rounded-full border-0 px-6 text-base font-semibold text-primary-foreground shadow-md"
                 >
                   Get started
                   <ArrowRight className="h-4 w-4" />
@@ -246,7 +246,7 @@ export default function HomePage() {
                 key={item.title}
                 className="h-full rounded-xl border border-border bg-card p-5 text-center transition-all duration-300 hover:card-shadow-hover sm:p-6"
               >
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] sm:h-14 sm:w-14">
+                <div className="gradient-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl sm:h-14 sm:w-14">
                   <item.icon className="h-6 w-6 text-primary-foreground sm:h-7 sm:w-7" />
                 </div>
                 <h3 className="mb-2 text-base font-semibold text-foreground sm:text-lg">{item.title}</h3>
@@ -260,7 +260,7 @@ export default function HomePage() {
       {/* CTA */}
       <section id="cta" className="py-10 sm:py-12 lg:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] p-8 text-center sm:rounded-3xl sm:p-10 md:p-12">
+          <div className="gradient-primary relative overflow-hidden rounded-2xl p-8 text-center sm:rounded-3xl sm:p-10 md:p-12">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full border-2 border-primary-foreground" />
               <div className="absolute -bottom-10 -left-10 h-60 w-60 rounded-full border-2 border-primary-foreground" />
