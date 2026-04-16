@@ -182,9 +182,9 @@ export default function HomePage() {
               className={`${heroSerif.className} mx-auto mb-6 max-w-4xl text-pretty text-[2.65rem] font-semibold leading-[1.08] tracking-[-0.02em] text-white sm:text-6xl sm:leading-[1.06] md:text-7xl md:leading-[1.05]`}
             >
               <span className="block">
-                Your path to <span className="text-amber-200">Polish</span>
+              Your Path to <span className="text-amber-200">European</span>
               </span>
-              <span className="mt-1 block font-semibold sm:mt-1.5">citizenship</span>
+              <span className="mt-1 block font-semibold sm:mt-1.5">Citizenship</span>
               <span className="mt-4 block font-sans text-2xl font-semibold leading-snug tracking-tight sm:mt-5 sm:text-3xl md:text-[2rem]">
                 <span className="bg-gradient-to-r from-violet-200 via-indigo-100 to-sky-200 bg-clip-text text-transparent">
                   organized end to end
