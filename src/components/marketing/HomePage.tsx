@@ -11,6 +11,7 @@ import {
   Globe,
   Home,
   LayoutDashboard,
+  MapPin,
   Menu,
   Shield,
   TrendingUp,
@@ -18,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { SocialNavLinks } from "@/components/marketing/SocialNavLinks";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
@@ -407,18 +409,90 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer: refer-style dark sidebar tone */}
-      <footer className="bg-sidebar text-sidebar-foreground">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center justify-between gap-4 border-t border-sidebar-border pt-8 sm:flex-row">
-            <BrandLogo href={null} size="md" className="opacity-95" />
-            <p className="text-center text-xs text-sidebar-muted sm:text-left">
-              © {new Date().getFullYear()} Polonia4u. Demo interface.
+      <footer className="bg-[#0b1120] text-white">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+          <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+            <div className="space-y-4">
+              <BrandLogo href={null} size="md" className="opacity-95" />
+              <p className="text-sm font-semibold tracking-tight">Polonia4u</p>
+              <p className="max-w-sm text-sm leading-relaxed text-slate-400">
+                European citizenship and documentation services for families. Secure workflows, expert guidance, and a
+                clear path from eligibility to recognition.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-white">Quick Links</h3>
+              <ul className="mt-4 space-y-3 text-sm text-slate-400">
+                <li>
+                  <Link href="/triage" className="transition-colors hover:text-white">
+                    Eligibility triage
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#platform" className="transition-colors hover:text-white">
+                    Platform
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#features" className="transition-colors hover:text-white">
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#contact" className="transition-colors hover:text-white">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-white">Services</h3>
+              <ul className="mt-4 space-y-3 text-sm text-slate-400">
+                {[
+                  "Citizenship process tracking",
+                  "Document vault & translations",
+                  "E-sign & Stripe billing",
+                  "Family & satellite contracts",
+                ].map((label) => (
+                  <li key={label} className="flex gap-2">
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+                    <span>{label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-white">Locations</h3>
+              <ul className="mt-4 space-y-3 text-sm text-slate-400">
+                {["São Paulo", "Lisboa", "Warszawa"].map((city) => (
+                  <li key={city} className="flex gap-2">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+                    <span>{city}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 flex flex-col items-center gap-8 border-t border-white/10 pt-8 lg:flex-row lg:justify-between lg:gap-6">
+            <p className="order-1 text-center text-sm text-slate-400 lg:order-none lg:text-left">
+              © {new Date().getFullYear()} Polonia4u. All rights reserved.
             </p>
-            <div className="flex gap-4 text-xs text-sidebar-muted">
-              <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 className="h-3.5 w-3.5 text-primary" /> Demo data only
-              </span>
+
+            <div className="order-2 lg:order-none">
+              <SocialNavLinks />
+            </div>
+
+            <div className="order-3 flex flex-wrap justify-center gap-6 text-sm text-slate-400 lg:order-none lg:justify-end">
+              <Link href="/privacy" className="transition-colors hover:text-white">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="transition-colors hover:text-white">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>
