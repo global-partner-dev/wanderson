@@ -16,9 +16,10 @@ import {
 } from "lucide-react";
 
 const navLinks = [
+  { href: "#platform", label: "Platform" },
+  { href: "#acquisition", label: "Acquisition" },
   { href: "#features", label: "Features" },
   { href: "#cta", label: "Get started" },
-  { href: "#contact", label: "Contact" },
 ];
 
 export default function HomePage() {
@@ -167,8 +168,8 @@ export default function HomePage() {
                 </span>
               </h1>
               <p className="mb-7 max-w-lg text-sm leading-relaxed text-primary-foreground/75 sm:text-lg">
-                Track leads, cases, proposals, and documents in one place. Built for teams who need clarity from first
-                contact to signature.
+                European citizenship workflows for teams: headless architecture, Supabase RLS, Stripe Billing, e-sign, CRM,
+                and a client portal — GDPR / LGPD aligned.
               </p>
               <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
                 <Link
@@ -179,12 +180,92 @@ export default function HomePage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/login"
+                  href="/triage"
                   className="inline-flex h-11 items-center justify-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base font-semibold text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/20"
+                >
+                  Try triage wizard
+                </Link>
+                <Link
+                  href="/login"
+                  className="inline-flex h-11 items-center justify-center rounded-full border border-primary-foreground/15 bg-transparent px-6 text-base font-semibold text-primary-foreground/90 hover:bg-primary-foreground/10"
                 >
                   Log in
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform architecture — links to demo routes */}
+      <section id="platform" className="border-b border-border bg-background py-10 sm:py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 text-center sm:mb-10">
+            <span className="mb-2 inline-flex rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Headless stack
+            </span>
+            <h2 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">Public SEO, private CSR</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
+              Next.js SSR for marketing and compliance pages; authenticated client portal as a SPA-style experience. API
+              and workers in Node + TypeScript; PostgreSQL with Row Level Security (e.g. Supabase).
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              { href: "/triage", title: "Triage wizard", desc: "Anonymous steps; PII only at the end; no partial storage." },
+              { href: "/portal", title: "Client portal", desc: "Timeline, vault, billing states — demo shell." },
+              { href: "/proposal/demo-uuid-0001", title: "Secure proposal", desc: "Expiry countdown, satellite signers, BRL checkout." },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group rounded-2xl border border-border bg-card p-5 transition hover:card-shadow-hover sm:p-6"
+              >
+                <h3 className="text-base font-semibold text-foreground group-hover:text-primary sm:text-lg">{item.title}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">{item.desc}</p>
+                <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-primary">
+                  Open demo <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Acquisition */}
+      <section id="acquisition" className="bg-muted/50 py-10 sm:py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+              <h3 className="text-lg font-bold text-foreground sm:text-xl">A) Direct e-commerce</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Product landing → Stripe Checkout → user creation → client portal. Standalone SKUs (translation,
+                research) skip the triage wizard.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-foreground">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                  Stripe Billing · Pix, boleto, card in BRL
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                  Webhooks for reconciliation and ERP (e.g. Conta Azul)
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
+              <h3 className="text-lg font-bold text-foreground sm:text-xl">B) Triage wizard</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                JSON-driven eligibility engine. No CPF/RG during anonymous steps; CRM receives only completed, qualified
+                leads. Retention: exit-intent + Meta/WhatsApp bots feeding the same pipeline.
+              </p>
+              <Link
+                href="/triage"
+                className="gradient-primary mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm"
+              >
+                Launch wizard demo
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>
@@ -221,14 +302,15 @@ export default function HomePage() {
             </span>
             <h2 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">Everything your firm needs</h2>
             <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
-              Sales, operations, and finance views that stay aligned with how citizenship teams actually work.
+              CRM with Kanban and table views, family &quot;satellite&quot; contracts, finance with grace and hard-lock
+              billing states — aligned with how citizenship teams actually work.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
             {[
               {
                 title: "Sales & CRM",
-                desc: "Lead funnel, proposals, and contracts in one pipeline.",
+                desc: "Kanban + table, secure proposal links, e-sign and Stripe handoff.",
                 icon: TrendingUp,
               },
               {
@@ -269,14 +351,22 @@ export default function HomePage() {
               <LayoutDashboard className="mx-auto mb-4 h-12 w-12 text-primary-foreground/90" />
               <h2 className="mb-2 text-2xl font-bold text-primary-foreground sm:text-3xl lg:text-4xl">Ready to try the dashboard?</h2>
               <p className="mx-auto mb-6 max-w-xl text-sm text-primary-foreground/85 sm:text-lg">
-                This is a frontend-only demo. Explore the Kanban-style lead funnel and backoffice panels.
+                Frontend-only demo: CRM Kanban, finance labels, triage wizard, client portal, and proposal link flows.
               </p>
-              <Link
-                href="/admin"
-                className="inline-flex items-center justify-center rounded-full bg-primary-foreground px-8 py-3 text-sm font-semibold text-primary shadow-sm hover:bg-primary-foreground/90 sm:text-base"
-              >
-                Open admin (demo)
-              </Link>
+              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Link
+                  href="/admin"
+                  className="inline-flex items-center justify-center rounded-full bg-primary-foreground px-8 py-3 text-sm font-semibold text-primary shadow-sm hover:bg-primary-foreground/90 sm:text-base"
+                >
+                  Open admin (demo)
+                </Link>
+                <Link
+                  href="/portal"
+                  className="inline-flex items-center justify-center rounded-full border border-primary-foreground/30 bg-transparent px-8 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 sm:text-base"
+                >
+                  Client portal
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -287,11 +377,17 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6">
           <h2 className="text-xl font-bold text-foreground sm:text-2xl">Team member?</h2>
           <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-            Jump into the demo backoffice to see the full workflow layout.
+            Open the backoffice for CRM Kanban or the client portal demo to see both sides of the journey.
           </p>
-          <Link href="/admin" className="mt-6 inline-flex font-semibold text-primary hover:underline">
-            Open admin backoffice →
-          </Link>
+          <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/admin" className="inline-flex font-semibold text-primary hover:underline">
+              Admin backoffice →
+            </Link>
+            <span className="hidden text-muted-foreground sm:inline">·</span>
+            <Link href="/portal" className="inline-flex font-semibold text-primary hover:underline">
+              Client portal →
+            </Link>
+          </div>
         </div>
       </section>
 

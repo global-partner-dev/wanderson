@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { DetailModule, FinViewId, ModalId, TabId } from "./admin-types";
+import CrmKanban from "./CrmKanban";
 
 /** Matches refer `Dashboard` KPI cards: gradient icon tile + label + value. */
 function DashboardStyleKpiCard({
@@ -106,85 +107,14 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
 
   return (
     <>
-      {/* CRM */}
+      {/* CRM — Kanban + table (see CrmKanban) */}
       <div
         className={cn(
-          "view-tab custom-scroll flex-1 overflow-x-auto overflow-y-hidden bg-background p-3 fade-in md:p-6",
+          "view-tab flex min-h-0 flex-1 flex-col overflow-hidden bg-background p-3 fade-in md:p-6",
           hidden("tab-crm") && "hidden",
         )}
       >
-        <div className="flex h-full min-w-max gap-4 pb-2 md:gap-6">
-          {/* Kanban columns — card shell + inner cards like refer Tasks */}
-          <div className="card-shadow flex h-full w-72 flex-col rounded-xl border-0 bg-card md:w-80">
-            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-border p-3 sm:p-4">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-destructive" /> Queue / pop-up
-              </h3>
-              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                1
-              </span>
-            </div>
-            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto bg-muted/30 p-3 sm:p-4">
-              <div className="card-shadow cursor-pointer rounded-lg border-0 border-l-4 border-l-destructive bg-card p-3 sm:p-4">
-                <div className="mb-2 flex items-start justify-between">
-                  <span className="rounded bg-destructive/15 px-2 py-1 text-[10px] font-bold uppercase text-destructive">Abandoned</span>
-                </div>
-                <h4 className="text-sm font-semibold text-foreground">Mariana Costa</h4>
-                <button
-                  type="button"
-                  className="mt-3 w-full rounded-lg bg-success py-2 text-xs font-semibold text-success-foreground transition hover:opacity-95"
-                >
-                  Message on WhatsApp
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-shadow flex h-full w-72 flex-col rounded-xl border-0 bg-card md:w-80">
-            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-border p-3 sm:p-4">
-              <h3 className="text-sm font-semibold text-foreground">Eligible (no documents)</h3>
-              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                1
-              </span>
-            </div>
-            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto bg-muted/30 p-3 sm:p-4">
-              <div className="card-shadow rounded-lg border-0 bg-card p-3 sm:p-4">
-                <h4 className="text-sm font-semibold text-foreground">Carlos Almeida</h4>
-                <p className="mt-1 text-xs text-muted-foreground">Knows the grandfather line; no certificates yet.</p>
-                <button
-                  type="button"
-                  className="mt-3 w-full rounded-lg border border-warning/40 bg-warning/10 py-2 text-xs font-semibold text-warning transition hover:bg-warning/15"
-                >
-                  Sell document search
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-shadow flex h-full w-72 flex-col rounded-xl border-0 bg-card md:w-80">
-            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-border p-3 sm:p-4">
-              <h3 className="text-sm font-semibold text-foreground">Eligible (with documents)</h3>
-              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                1
-              </span>
-            </div>
-            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto bg-muted/30 p-3 sm:p-4">
-              <div className="card-shadow rounded-lg border-0 bg-card p-3 sm:p-4">
-                <div className="mb-2 flex items-start justify-between">
-                  <span className="rounded bg-success/15 px-2 py-1 text-[10px] font-bold uppercase text-success">Hot lead</span>
-                </div>
-                <h4 className="text-sm font-semibold text-foreground">Fernanda Lima</h4>
-                <p className="mt-1 text-xs text-muted-foreground">Has full transcript certificate.</p>
-                <button
-                  type="button"
-                  className="gradient-primary mt-3 w-full rounded-lg border-0 py-2 text-xs font-semibold text-primary-foreground shadow-sm"
-                >
-                  Schedule call
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CrmKanban />
       </div>
 
       {/* Preliminary analysis */}
@@ -385,7 +315,7 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
             <tbody>
               <tr className="bg-warning/10">
                 <td className="px-6 py-4 font-bold">Marcos Silva</td>
-                <td className="px-6 py-4 font-bold">€ 200.00</td>
+                <td className="px-6 py-4 font-bold">R$ 200,00</td>
                 <td className="px-6 py-4">
                   <span className="rounded border border-warning/30 bg-warning/15 px-2 py-1 text-xs font-bold text-warning">
                     Awaiting PIX
@@ -845,7 +775,7 @@ function FinanceSection({
     <div className="view-tab flex flex-1 flex-col overflow-hidden bg-muted/50 fade-in">
       <div className="shrink-0 border-b border-border bg-card px-4 py-3 sm:px-6">
         <div className="custom-scroll flex flex-wrap gap-2">
-          {finBtn("fin-geral", "Overview (P&L)")}
+          {finBtn("fin-geral", "Stripe & reconciliation")}
           {finBtn("fin-cidadania", "Citizenship")}
           {finBtn("fin-busca", "Document search")}
           {finBtn("fin-traducao", "Document translation")}
@@ -855,6 +785,24 @@ function FinanceSection({
 
       <div className="custom-scroll flex-1 overflow-auto p-4 sm:p-6">
         <div className={cn("fin-view fade-in", finTab !== "fin-geral" && "hidden")}>
+          <div className="mb-4 grid gap-3 sm:grid-cols-2">
+            <Card className="card-shadow border-l-4 border-l-warning border-0">
+              <CardContent className="p-4 sm:p-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-warning">Grace · pending_payment</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Days 1–29 overdue: portal stays open; yellow banner + automated email/WhatsApp with payment link.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="card-shadow border-l-4 border-l-destructive border-0">
+              <CardContent className="p-4 sm:p-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-destructive">Hard lock · suspended</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  30+ days: downloads revoked; client sees restricted payment screen; admin alerted to pause ops.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
           <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-6">
             <DashboardStyleKpiCard
               label="Total revenue"
@@ -885,7 +833,9 @@ function FinanceSection({
           <Card className="card-shadow border-0">
             <CardHeader>
               <CardTitle className="text-base">Recent payments</CardTitle>
-              <CardDescription>All service categories in one ledger (demo data).</CardDescription>
+              <CardDescription>
+                Stripe webhooks → ledger; Conta Azul POST for accounting (no native P&amp;L in-app — demo labels).
+              </CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
               <Table>
@@ -971,7 +921,7 @@ function FinanceSection({
                     <TableCell>
                       <p className="font-medium text-foreground">Carlos Almeida</p>
                     </TableCell>
-                    <TableCell className="text-right font-semibold tabular-nums text-success">+ € 200.00</TableCell>
+                    <TableCell className="text-right font-semibold tabular-nums text-success">+ R$ 200,00</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

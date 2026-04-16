@@ -20,7 +20,7 @@ import type { TabId } from "./admin-types";
 type NavItem = { id: TabId; title: string; icon: React.ComponentType<{ className?: string }> };
 
 const salesItems: NavItem[] = [
-  { id: "tab-crm", title: "Lead funnel", icon: Filter },
+  { id: "tab-crm", title: "CRM · Kanban", icon: Filter },
   { id: "tab-analise", title: "Preliminary analysis", icon: FileText },
   { id: "tab-agenda", title: "Video call agenda", icon: Video },
   { id: "tab-prop-vendas", title: "Proposals (sales)", icon: MessageSquare },
