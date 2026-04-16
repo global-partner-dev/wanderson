@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Briefcase,
   CheckCircle,
   Clock,
   FileStack,
@@ -8,18 +9,28 @@ import {
   Filter,
   Flag,
   Languages,
+  LogOut,
   MessageSquare,
   PieChart,
   Search,
+  Shield,
+  User,
   UserCheck,
   Video,
   X,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { logout } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { TabId } from "./admin-types";
+
+const roleMeta = {
+  admin:  { label: "Admin",  Icon: Shield,   color: "text-red-400"  },
+  staff:  { label: "Staff",  Icon: Briefcase, color: "text-blue-400" },
+  client: { label: "Client", Icon: User,      color: "text-green-400"},
+} as const;
 
 type NavItem = { id: TabId; title: string; icon: React.ComponentType<{ className?: string }> };
 
@@ -47,7 +58,7 @@ type Props = {
 };
 
 export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggleMobile }: Props) {
-  const { role } = useAuth();
+  const { user, profile, role } = useAuth();
 
   const mgmtItems: NavItem[] = [
     ...(role === "admin"
@@ -130,6 +141,43 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
             </div>
           </nav>
         </div>
+
+        {/* ── User profile + logout ── */}
+        {user && (() => {
+          const meta = roleMeta[role ?? "client"];
+          const RoleIcon = meta.Icon;
+          const initials = (profile?.full_name ?? user.email ?? "U").charAt(0).toUpperCase();
+          return (
+            <div className="shrink-0 border-t border-sidebar-border p-3">
+              <div className="flex items-center gap-3 rounded-lg px-2 py-2">
+                {/* Avatar */}
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/20 text-sm font-bold text-primary">
+                  {initials}
+                </div>
+                {/* Name + role */}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold leading-none text-sidebar-accent-foreground">
+                    {profile?.full_name ?? "User"}
+                  </p>
+                  <span className={cn("mt-1 flex items-center gap-1 text-[11px] font-medium", meta.color)}>
+                    <RoleIcon className="h-3 w-3" />
+                    {meta.label}
+                  </span>
+                </div>
+                {/* Logout icon button */}
+                <button
+                  type="button"
+                  onClick={() => logout()}
+                  title="Log out"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-destructive"
+                  aria-label="Log out"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          );
+        })()}
       </aside>
     </>
   );

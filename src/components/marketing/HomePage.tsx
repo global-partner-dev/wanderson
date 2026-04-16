@@ -348,7 +348,7 @@ export default function HomePage() {
                 <s.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${s.className}`} />
               </div>
               <div className="min-w-0">
-                <p className="text-xl font-extrabold leading-none text-foreground sm:text-2xl lg:text-3xl">{s.value}</p>
+                <p className="text-xl font-bold leading-none text-foreground sm:text-2xl lg:text-3xl">{s.value}</p>
                 <p className="mt-0.5 truncate text-[9px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px] sm:mt-1">
                   {s.label}
                 </p>
