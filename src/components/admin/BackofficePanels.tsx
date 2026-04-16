@@ -26,57 +26,76 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
       {/* CRM */}
       <div
         className={cn(
-          "view-tab custom-scroll flex-1 overflow-x-auto overflow-y-hidden bg-slate-100/50 p-4 fade-in md:p-6",
+          "view-tab custom-scroll flex-1 overflow-x-auto overflow-y-hidden bg-background p-3 fade-in md:p-6",
           hidden("tab-crm") && "hidden",
         )}
       >
         <div className="flex h-full min-w-max gap-4 pb-2 md:gap-6">
-          <div className="flex h-full w-72 flex-col rounded-xl border border-slate-200 bg-slate-200/40 shadow-sm md:w-80">
-            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-slate-200 bg-white p-4">
-              <h3 className="flex items-center gap-2 text-sm font-bold uppercase text-slate-700">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> Queue / pop-up
+          {/* Kanban columns — card shell + inner cards like refer Tasks */}
+          <div className="card-shadow flex h-full w-72 flex-col rounded-xl border-0 bg-card md:w-80">
+            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-border p-3 sm:p-4">
+              <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-destructive" /> Queue / pop-up
               </h3>
+              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                1
+              </span>
             </div>
-            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto p-3">
-              <div className="cursor-pointer rounded-lg border border-red-200 bg-white p-4 shadow-sm">
+            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto bg-muted/30 p-3 sm:p-4">
+              <div className="card-shadow cursor-pointer rounded-lg border-0 border-l-4 border-l-destructive bg-card p-3 sm:p-4">
                 <div className="mb-2 flex items-start justify-between">
-                  <span className="rounded bg-red-50 px-2 py-1 text-[10px] font-bold uppercase text-red-600">Abandoned</span>
+                  <span className="rounded bg-destructive/15 px-2 py-1 text-[10px] font-bold uppercase text-destructive">Abandoned</span>
                 </div>
-                <h4 className="text-sm font-bold text-slate-800">Mariana Costa</h4>
-                <button type="button" className="mt-3 w-full rounded bg-green-600 py-2 text-xs font-bold text-white transition hover:bg-green-700">
+                <h4 className="text-sm font-semibold text-foreground">Mariana Costa</h4>
+                <button
+                  type="button"
+                  className="mt-3 w-full rounded-lg bg-success py-2 text-xs font-semibold text-success-foreground transition hover:opacity-95"
+                >
                   Message on WhatsApp
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="flex h-full w-72 flex-col rounded-xl border border-slate-200 bg-slate-200/40 shadow-sm md:w-80">
-            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-slate-200 bg-white p-4">
-              <h3 className="text-sm font-bold uppercase text-slate-700">Eligible (no documents)</h3>
+          <div className="card-shadow flex h-full w-72 flex-col rounded-xl border-0 bg-card md:w-80">
+            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-border p-3 sm:p-4">
+              <h3 className="text-sm font-semibold text-foreground">Eligible (no documents)</h3>
+              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                1
+              </span>
             </div>
-            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto p-3">
-              <div className="rounded-lg border border-amber-300 bg-white p-4 shadow-sm">
-                <h4 className="text-sm font-bold text-slate-800">Carlos Almeida</h4>
-                <p className="mt-1 text-xs text-slate-500">Knows the grandfather line; no certificates yet.</p>
-                <button type="button" className="mt-3 w-full rounded border border-amber-200 bg-amber-50 py-2 text-xs font-bold text-amber-700 transition hover:bg-amber-100">
+            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto bg-muted/30 p-3 sm:p-4">
+              <div className="card-shadow rounded-lg border-0 bg-card p-3 sm:p-4">
+                <h4 className="text-sm font-semibold text-foreground">Carlos Almeida</h4>
+                <p className="mt-1 text-xs text-muted-foreground">Knows the grandfather line; no certificates yet.</p>
+                <button
+                  type="button"
+                  className="mt-3 w-full rounded-lg border border-warning/40 bg-warning/10 py-2 text-xs font-semibold text-warning transition hover:bg-warning/15"
+                >
                   Sell document search
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="flex h-full w-72 flex-col rounded-xl border border-slate-200 bg-slate-200/40 shadow-sm md:w-80">
-            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-slate-200 bg-white p-4">
-              <h3 className="text-sm font-bold uppercase text-slate-700">Eligible (with documents)</h3>
+          <div className="card-shadow flex h-full w-72 flex-col rounded-xl border-0 bg-card md:w-80">
+            <div className="flex shrink-0 items-center justify-between rounded-t-xl border-b border-border p-3 sm:p-4">
+              <h3 className="text-sm font-semibold text-foreground">Eligible (with documents)</h3>
+              <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                1
+              </span>
             </div>
-            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto p-3">
-              <div className="rounded-lg border border-emerald-300 bg-white p-4 shadow-sm">
+            <div className="custom-scroll flex-1 space-y-3 overflow-y-auto bg-muted/30 p-3 sm:p-4">
+              <div className="card-shadow rounded-lg border-0 bg-card p-3 sm:p-4">
                 <div className="mb-2 flex items-start justify-between">
-                  <span className="rounded bg-emerald-100 px-2 py-1 text-[10px] font-bold uppercase text-emerald-700">Hot lead</span>
+                  <span className="rounded bg-success/15 px-2 py-1 text-[10px] font-bold uppercase text-success">Hot lead</span>
                 </div>
-                <h4 className="text-sm font-bold text-slate-800">Fernanda Lima</h4>
-                <p className="mt-1 text-xs text-slate-500">Has full transcript certificate.</p>
-                <button type="button" className="mt-3 w-full rounded border border-blue-200 bg-blue-50 py-2 text-xs font-bold text-blue-700 transition">
+                <h4 className="text-sm font-semibold text-foreground">Fernanda Lima</h4>
+                <p className="mt-1 text-xs text-muted-foreground">Has full transcript certificate.</p>
+                <button
+                  type="button"
+                  className="mt-3 w-full rounded-lg border-0 bg-gradient-to-br from-[hsl(222_100%_64%)] to-[hsl(252_90%_65%)] py-2 text-xs font-semibold text-primary-foreground shadow-sm"
+                >
                   Schedule call
                 </button>
               </div>

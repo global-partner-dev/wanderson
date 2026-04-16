@@ -39,12 +39,12 @@ export default function AdminApp() {
   const closeModal = useCallback((id: ModalId) => setModalOpen((m) => (m === id ? null : m)), []);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-800 antialiased">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground antialiased">
       <button
         type="button"
         aria-hidden={!mobileOpen}
         className={cn(
-          "fixed inset-0 z-40 bg-blue-900/50 md:hidden",
+          "fixed inset-0 z-40 bg-foreground/40 md:hidden",
           mobileOpen ? "block" : "hidden",
         )}
         onClick={() => setMobileOpen(false)}

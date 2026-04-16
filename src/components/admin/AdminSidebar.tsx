@@ -68,9 +68,9 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
         onClick={() => onSelect(item.id, item.title)}
         className={cn(
           "menu-btn flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
-          active && sales && "bg-blue-600 text-white shadow-sm",
-          active && !sales && "bg-slate-800 text-white",
-          !active && "text-slate-400 hover:bg-slate-800 hover:text-white",
+          active && sales && "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm",
+          active && !sales && "bg-sidebar-accent text-sidebar-accent-foreground",
+          !active && "text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         )}
       >
         <Icon className="h-4 w-4 shrink-0" />
@@ -84,35 +84,35 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
       <aside
         id="sidebar"
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col justify-between border-r border-slate-800 bg-slate-900 text-slate-300 transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col justify-between border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out md:relative md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
         )}
       >
         <div>
-          <div className="flex h-16 items-center justify-between border-b border-slate-800 bg-slate-950 px-6">
+          <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-6">
             <div>
-              <span className="text-xl font-bold tracking-tight text-white">
-                Polonia4u<span className="text-amber-500">.</span>
+              <span className="text-xl font-bold tracking-tight text-sidebar-accent-foreground">
+                Polonia4u<span className="text-primary">.</span>
               </span>
             </div>
-            <button type="button" onClick={onToggleMobile} className="text-slate-400 hover:text-white md:hidden">
+            <button type="button" onClick={onToggleMobile} className="text-sidebar-muted hover:text-sidebar-accent-foreground md:hidden">
               <X className="h-6 w-6" />
             </button>
           </div>
 
           <div className="custom-scroll h-[calc(100vh-4rem)] space-y-6 overflow-y-auto p-4">
             <div>
-              <p className="mb-2 ml-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Sales</p>
+              <p className="mb-2 ml-2 text-[10px] font-bold uppercase tracking-widest text-sidebar-muted">Sales</p>
               <div className="space-y-1">{salesItems.map(renderBtn)}</div>
             </div>
 
             <div>
-              <p className="mb-2 ml-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Operations</p>
+              <p className="mb-2 ml-2 text-[10px] font-bold uppercase tracking-widest text-sidebar-muted">Operations</p>
               <div className="space-y-1">{opsItems.map(renderBtn)}</div>
             </div>
 
             <div>
-              <p className="mb-2 ml-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Management</p>
+              <p className="mb-2 ml-2 text-[10px] font-bold uppercase tracking-widest text-sidebar-muted">Management</p>
               <div className="space-y-1">{mgmtItems.map(renderBtn)}</div>
             </div>
           </div>
