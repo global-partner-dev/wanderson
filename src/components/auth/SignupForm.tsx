@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,12 +23,13 @@ export default function SignupForm() {
           <div className="absolute bottom-10 right-10 h-56 w-56 rounded-full border-2 border-primary-foreground lg:h-96 lg:w-96" />
           <div className="absolute left-1/3 top-1/2 h-32 w-32 -translate-y-1/2 rounded-full border-2 border-primary-foreground lg:h-48 lg:w-48" />
         </div>
-        <div className="relative z-10 text-center">
-          <Link href="/" className="mb-8 block w-fit transition-opacity hover:opacity-90 lg:mb-10">
-            <span className="text-3xl font-bold tracking-tight text-primary-foreground drop-shadow-md lg:text-4xl">
-              Polonia4u<span className="text-amber-200">.</span>
-            </span>
-          </Link>
+        <div className="relative z-10 flex w-full max-w-lg flex-col items-center text-center">
+          <BrandLogo
+            href="/"
+            size="2xl"
+            className="drop-shadow-md"
+            linkClassName="mb-8 flex w-fit justify-center transition-opacity hover:opacity-90 lg:mb-10"
+          />
           <p className="max-w-md text-base text-primary-foreground/85 lg:text-lg">
             Create an account to explore the demo. Styling matches our marketing site and admin experience.
           </p>
@@ -36,11 +38,11 @@ export default function SignupForm() {
 
       <div className="flex flex-1 items-center justify-center overflow-y-auto bg-background px-4 py-8 sm:px-6 md:p-8">
         <div className="w-full max-w-md">
-          <Link href="/" className="mb-8 flex justify-center transition-opacity hover:opacity-80 md:hidden">
-            <span className="text-2xl font-bold text-foreground">
-              Polonia4u<span className="text-primary">.</span>
-            </span>
-          </Link>
+          <BrandLogo
+            href="/"
+            size="lg"
+            linkClassName="mb-8 flex justify-center transition-opacity hover:opacity-80 md:hidden"
+          />
 
           <h1 className="text-center text-xl font-bold text-foreground sm:text-2xl">Create your account</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground sm:text-base">

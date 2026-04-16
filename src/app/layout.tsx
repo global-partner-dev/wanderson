@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     template: "%s · Polonia4u",
   },
   description: "Citizenship and document services (demo app)",
+  icons: {
+    icon: [{ url: "/favicon.ico", type: "image/x-icon", sizes: "any" }],
+  },
 };
 
 export default function RootLayout({

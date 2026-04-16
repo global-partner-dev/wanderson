@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   ArrowDownToLine,
   ArrowUpFromLine,
@@ -11,6 +10,7 @@ import {
   Lock,
   Shield,
 } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -49,9 +49,7 @@ export default function ClientPortal() {
           </div>
         )}
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-bold tracking-tight">
-            Polonia4u<span className="text-primary">.</span>
-          </Link>
+          <BrandLogo href="/" size="sm" />
           <div className="flex items-center gap-2">
             <span className="hidden text-xs text-muted-foreground sm:inline">Billing demo:</span>
             <Select value={billing} onValueChange={(v) => setBilling(v as BillingMode)}>

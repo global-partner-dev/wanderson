@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import ProposalClient from "@/components/marketing/ProposalClient";
 
 type Props = { params: Promise<{ uuid: string }> };
@@ -17,9 +18,7 @@ export default async function ProposalPage({ params }: Props) {
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/90 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-bold tracking-tight">
-            Polonia4u<span className="text-primary">.</span>
-          </Link>
+          <BrandLogo href="/" size="sm" />
           <span className="text-xs text-muted-foreground">Secure proposal</span>
         </div>
       </header>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import TriageWizard from "@/components/marketing/TriageWizard";
 import { Button } from "@/components/ui/button";
 
@@ -12,9 +13,7 @@ export default function TriagePage() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-          <Link href="/" className="text-sm font-bold tracking-tight">
-            Polonia4u<span className="text-primary">.</span>
-          </Link>
+          <BrandLogo href="/" size="sm" />
           <Button asChild variant="ghost" className="text-sm font-medium text-muted-foreground hover:text-foreground">
             <Link href="/login">Log in</Link>
           </Button>

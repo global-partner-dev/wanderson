@@ -14,6 +14,7 @@ import {
   Video,
   X,
 } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { TabId } from "./admin-types";
@@ -24,9 +25,9 @@ const salesItems: NavItem[] = [
   { id: "tab-crm", title: "CRM Kanban", icon: Filter },
   { id: "tab-analise", title: "Preliminary analysis", icon: FileText },
   { id: "tab-agenda", title: "Video call agenda", icon: Video },
-  { id: "tab-prop-vendas", title: "Proposals (sales)", icon: MessageSquare },
-  { id: "tab-prop-aguardando", title: "Proposals (pending close)", icon: Clock },
-  { id: "tab-contratos", title: "Contracts (completed)", icon: CheckCircle },
+  { id: "tab-prop-vendas", title: "Proposals", icon: MessageSquare },
+  { id: "tab-prop-aguardando", title: "Proposals", icon: Clock },
+  { id: "tab-contratos", title: "Contracts", icon: CheckCircle },
 ];
 
 const opsItems: NavItem[] = [
@@ -84,9 +85,10 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
         )}
       >
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="flex h-16 shrink-0 items-center justify-between border-b border-sidebar-border px-4">
-            <div>
-              <span className="text-lg font-bold tracking-tight text-sidebar-accent-foreground">
+          <div className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-sidebar-border px-4">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
+              <BrandLogo href="/" size="sm" className="h-8 max-h-8 w-auto shrink-0 opacity-95" />
+              <span className="truncate text-lg font-bold leading-tight tracking-tight text-sidebar-accent-foreground">
                 Polonia4u<span className="text-primary">.</span>
               </span>
             </div>

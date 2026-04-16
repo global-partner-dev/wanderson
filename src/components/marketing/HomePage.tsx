@@ -17,6 +17,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
@@ -59,15 +60,13 @@ export default function HomePage() {
               : "border border-primary-foreground/20 bg-primary-foreground/15"
           }`}
         >
-          <Link href="/" className="flex items-center gap-2">
-            <span
-              className={`text-lg font-bold tracking-tight transition-colors duration-300 ${
-                scrolled ? "text-foreground" : "text-primary-foreground"
-              }`}
-            >
-              Polonia4u<span className={scrolled ? "text-primary" : "text-amber-300"}>.</span>
-            </span>
-          </Link>
+          <BrandLogo
+            href="/"
+            priority
+            className={`transition-[filter] duration-300 ${
+              scrolled ? "" : "drop-shadow-md brightness-110"
+            }`}
+          />
 
           <div className="hidden items-center gap-1 text-sm font-medium md:flex">
             {navLinks.map((item) => (
@@ -377,13 +376,6 @@ export default function HomePage() {
               <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <Button
                   asChild
-                  size="lg"
-                  className="rounded-full bg-primary-foreground px-8 text-primary shadow-sm hover:bg-primary-foreground/90 sm:text-base"
-                >
-                  <Link href="/admin">Open admin (demo)</Link>
-                </Button>
-                <Button
-                  asChild
                   variant="outline"
                   size="lg"
                   className="rounded-full border-primary-foreground/30 bg-transparent px-8 text-primary-foreground hover:bg-primary-foreground/10 sm:text-base"
@@ -419,11 +411,7 @@ export default function HomePage() {
       <footer className="bg-sidebar text-sidebar-foreground">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-4 border-t border-sidebar-border pt-8 sm:flex-row">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-sidebar-accent-foreground">
-                Polonia4u<span className="text-primary">.</span>
-              </span>
-            </div>
+            <BrandLogo href={null} size="md" className="opacity-95" />
             <p className="text-center text-xs text-sidebar-muted sm:text-left">
               © {new Date().getFullYear()} Polonia4u. Demo interface.
             </p>
