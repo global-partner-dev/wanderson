@@ -1,7 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { useEffect, useState } from "react";
+import heroBg from "@/assets/hero-bg.jpg";
 import {
   ArrowRight,
   CheckCircle2,
@@ -22,6 +25,12 @@ const navLinks = [
   { href: "#cta", label: "Get started" },
 ];
 
+const display = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-hero-display",
+});
+
 export default function HomePage() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -40,7 +49,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased">
+    <div className={`min-h-screen bg-background text-foreground antialiased ${display.variable}`}>
       {/* Navbar — floating pill, matches refer landing */}
       <nav className="fixed inset-x-0 top-2 z-50 flex justify-center px-2.5 sm:px-3 sm:top-3">
         <div
@@ -145,49 +154,60 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Hero */}
+      {/* Hero — photo background + modern type */}
       <section className="relative overflow-hidden">
-        <div className="relative flex min-h-[100svh] items-center pb-10 pt-20 sm:pb-12 sm:pt-24">
+        <div className="relative flex min-h-[100svh] items-center pb-14 pt-24 sm:pb-16 sm:pt-28">
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[linear-gradient(135deg,hsl(220_28%_12%)_0%,hsl(222_40%_24%)_40%,hsl(252_32%_26%)_100%)]" />
-            <div className="absolute inset-0 bg-gradient-to-r from-foreground/88 via-foreground/55 to-transparent" />
-            <div className="absolute -right-20 top-1/4 h-72 w-72 rounded-full bg-primary/25 blur-3xl" />
-            <div className="absolute -left-16 bottom-0 h-64 w-64 rounded-full bg-info/20 blur-3xl" />
+            <Image
+              src={heroBg}
+              alt=""
+              fill
+              priority
+              className="object-cover object-[center_35%]"
+              sizes="100vw"
+            />
+            {/* Readability: deep left vignette + subtle color wash */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/75 to-slate-950/25 sm:via-slate-950/65 sm:to-slate-950/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40" />
+            <div className="absolute -right-24 top-1/3 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
+            <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-sky-500/15 blur-3xl" />
           </div>
 
           <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
-              <div className="mb-4 inline-flex items-center rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-primary-foreground backdrop-blur-sm">
+            <div className="max-w-2xl lg:max-w-3xl">
+              <div className="mb-5 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90 shadow-sm backdrop-blur-md sm:text-xs">
                 Citizenship &amp; document services
               </div>
-              <h1 className="mb-4 text-3xl font-extrabold leading-[1.1] tracking-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+              <h1
+                className={`${display.className} mb-5 text-pretty text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-6xl lg:text-[3.5rem] lg:leading-[1.02]`}
+              >
                 Your path to Polish citizenship,
-                <br />
-                <span className="bg-gradient-to-r from-primary to-info bg-clip-text text-transparent">
+                <br className="hidden sm:block" />{" "}
+                <span className="bg-gradient-to-r from-sky-200 via-white to-violet-200 bg-clip-text text-transparent">
                   organized end to end
                 </span>
               </h1>
-              <p className="mb-7 max-w-lg text-sm leading-relaxed text-primary-foreground/75 sm:text-lg">
+              <p className="mb-9 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg sm:leading-relaxed">
                 European citizenship workflows for teams: headless architecture, Supabase RLS, Stripe Billing, e-sign, CRM,
                 and a client portal — GDPR / LGPD aligned.
               </p>
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                 <Link
                   href="/signup"
-                  className="gradient-primary inline-flex h-11 items-center justify-center gap-2 rounded-full border-0 px-6 text-base font-semibold text-primary-foreground shadow-md"
+                  className="gradient-primary inline-flex h-12 items-center justify-center gap-2 rounded-full border-0 px-7 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:opacity-95"
                 >
                   Get started
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/triage"
-                  className="inline-flex h-11 items-center justify-center rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base font-semibold text-primary-foreground backdrop-blur-sm hover:bg-primary-foreground/20"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 bg-white/10 px-7 text-base font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
                 >
                   Try triage wizard
                 </Link>
                 <Link
                   href="/login"
-                  className="inline-flex h-11 items-center justify-center rounded-full border border-primary-foreground/15 bg-transparent px-6 text-base font-semibold text-primary-foreground/90 hover:bg-primary-foreground/10"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-transparent px-7 text-base font-semibold text-white/90 transition hover:bg-white/10"
                 >
                   Log in
                 </Link>
