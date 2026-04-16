@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
 import { useEffect, useState } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
 import {
@@ -25,10 +25,10 @@ const navLinks = [
   { href: "#cta", label: "Get started" },
 ];
 
-const display = Plus_Jakarta_Sans({
+const heroSerif = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-hero-display",
+  weight: ["500", "600", "700"],
+  variable: "--font-hero-serif",
 });
 
 export default function HomePage() {
@@ -49,7 +49,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className={`min-h-screen bg-background text-foreground antialiased ${display.variable}`}>
+    <div className={`min-h-screen bg-background text-foreground antialiased ${heroSerif.variable}`}>
       {/* Navbar — floating pill, matches refer landing */}
       <nav className="fixed inset-x-0 top-2 z-50 flex justify-center px-2.5 sm:px-3 sm:top-3">
         <div
@@ -154,64 +154,67 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Hero — photo background + modern type */}
+      {/* Hero — centered, serif headline + gold accents, brighter photo */}
       <section className="relative overflow-hidden">
-        <div className="relative flex min-h-[100svh] items-center pb-14 pt-24 sm:pb-16 sm:pt-28">
+        <div className="relative flex min-h-[100svh] items-center justify-center pb-16 pt-28 sm:pb-20 sm:pt-32">
           <div className="absolute inset-0 z-0">
             <Image
               src={heroBg}
               alt=""
               fill
               priority
-              className="object-cover object-[center_35%]"
+              className="object-cover object-[center_35%] brightness-[1.12] saturate-[1.05]"
               sizes="100vw"
             />
-            {/* Readability: deep left vignette + subtle color wash */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/75 to-slate-950/25 sm:via-slate-950/65 sm:to-slate-950/15" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40" />
-            <div className="absolute -right-24 top-1/3 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
-            <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-sky-500/15 blur-3xl" />
+            {/* Lighter overlay so the building stays visible; even vignette for centered type */}
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-900/28 to-slate-950/50" />
+            <div className="absolute inset-0 bg-slate-950/20" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_65%_at_50%_45%,transparent_0%,rgb(15_23_42/0.35)_100%)]" />
+            <div className="absolute -right-24 top-1/3 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
+            <div className="absolute -left-20 bottom-0 h-64 w-64 rounded-full bg-amber-400/10 blur-3xl" />
           </div>
 
-          <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl lg:max-w-3xl">
-              <div className="mb-5 inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90 shadow-sm backdrop-blur-md sm:text-xs">
-                Citizenship &amp; document services
-              </div>
-              <h1
-                className={`${display.className} mb-5 text-pretty text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-6xl lg:text-[3.5rem] lg:leading-[1.02]`}
-              >
-                Your path to Polish citizenship,
-                <br className="hidden sm:block" />{" "}
-                <span className="bg-gradient-to-r from-sky-200 via-white to-violet-200 bg-clip-text text-transparent">
+          <div className="relative z-10 mx-auto w-full max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+            <div className="mx-auto mb-6 inline-flex items-center justify-center rounded-full border border-white/25 bg-black/25 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/95 shadow-sm backdrop-blur-md sm:text-[11px] sm:tracking-[0.32em]">
+              Citizenship &amp; document services
+            </div>
+            <h1
+              className={`${heroSerif.className} mx-auto mb-6 max-w-4xl text-pretty text-[2.65rem] font-semibold leading-[1.08] tracking-[-0.02em] text-white sm:text-6xl sm:leading-[1.06] md:text-7xl md:leading-[1.05]`}
+            >
+              <span className="block">
+                Your path to <span className="text-amber-200">Polish</span>
+              </span>
+              <span className="mt-1 block font-semibold sm:mt-1.5">citizenship</span>
+              <span className="mt-4 block font-sans text-2xl font-semibold leading-snug tracking-tight sm:mt-5 sm:text-3xl md:text-[2rem]">
+                <span className="bg-gradient-to-r from-violet-200 via-indigo-100 to-sky-200 bg-clip-text text-transparent">
                   organized end to end
                 </span>
-              </h1>
-              <p className="mb-9 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg sm:leading-relaxed">
-                European citizenship workflows for teams: headless architecture, Supabase RLS, Stripe Billing, e-sign, CRM,
-                and a client portal — GDPR / LGPD aligned.
-              </p>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-                <Link
-                  href="/signup"
-                  className="gradient-primary inline-flex h-12 items-center justify-center gap-2 rounded-full border-0 px-7 text-base font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:opacity-95"
-                >
-                  Get started
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/triage"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/25 bg-white/10 px-7 text-base font-semibold text-white backdrop-blur-md transition hover:bg-white/20"
-                >
-                  Try triage wizard
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-transparent px-7 text-base font-semibold text-white/90 transition hover:bg-white/10"
-                >
-                  Log in
-                </Link>
-              </div>
+              </span>
+            </h1>
+            <p className="mx-auto mb-10 max-w-2xl text-base leading-relaxed text-slate-200/95 sm:text-lg sm:leading-relaxed">
+              European citizenship workflows for teams: headless architecture, Supabase RLS, Stripe Billing, e-sign, CRM,
+              and a client portal — GDPR / LGPD aligned.
+            </p>
+            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-3">
+              <Link
+                href="/signup"
+                className="gradient-primary inline-flex h-12 min-w-[10rem] items-center justify-center gap-2 rounded-full border-0 px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-indigo-500/35 transition hover:opacity-95"
+              >
+                Get started
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/triage"
+                className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-full border border-white/30 bg-black/30 px-8 text-base font-semibold text-white backdrop-blur-md transition hover:bg-black/45"
+              >
+                Try triage wizard
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex h-12 items-center justify-center px-5 text-base font-semibold text-white/95 underline-offset-4 transition hover:text-white hover:underline"
+              >
+                Log in
+              </Link>
             </div>
           </div>
         </div>
