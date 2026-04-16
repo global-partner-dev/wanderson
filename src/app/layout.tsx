@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     default: "Polonia4u",
     template: "%s · Polonia4u",
   },
-  description: "Citizenship and document services (demo app)",
+  description: "Citizenship and document services",
   icons: {
     icon: [{ url: "/favicon.ico", type: "image/x-icon", sizes: "any" }],
   },
@@ -26,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

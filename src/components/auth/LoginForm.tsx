@@ -1,23 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { useState, useTransition } from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { login } from "@/lib/auth-actions";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function handleSubmit(formData: FormData) {
+    setError(null);
+    startTransition(async () => {
+      const result = await login(formData);
+      if (result?.error) {
+        setError(result.error);
+      }
+    });
   }
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
-      {/* Left: gradient panel (refer auth) */}
       <div className="relative hidden flex-col items-center justify-center overflow-hidden md:flex md:w-2/5 lg:w-1/2 gradient-primary p-8 lg:p-12">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute left-10 top-20 h-40 w-40 rounded-full border-2 border-primary-foreground lg:h-72 lg:w-72" />
@@ -37,7 +45,6 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Right */}
       <div className="flex flex-1 items-center justify-center bg-background px-4 py-10 sm:px-6 md:p-8">
         <div className="w-full max-w-md">
           <BrandLogo
@@ -48,13 +55,19 @@ export default function LoginForm() {
 
           <h1 className="text-center text-xl font-bold text-foreground sm:text-2xl">Log in</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground sm:text-base">
-            Frontend demo: no authentication is performed.
+            Sign in to your account to continue.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          {error && (
+            <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {error}
+            </div>
+          )}
+
+          <form action={handleSubmit} className="mt-8 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="login-email">Email</Label>
-              <Input id="login-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
+              <Input id="login-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="login-password">Password</Label>
@@ -66,6 +79,7 @@ export default function LoginForm() {
                   autoComplete="current-password"
                   placeholder="••••••••"
                   className="pr-10"
+                  required
                 />
                 <Button
                   type="button"
@@ -79,20 +93,26 @@ export default function LoginForm() {
                 </Button>
               </div>
             </div>
-            <Button type="submit" className="gradient-primary h-11 w-full border-0 text-primary-foreground shadow-sm hover:opacity-95">
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="gradient-primary h-11 w-full border-0 text-primary-foreground shadow-sm hover:opacity-95"
+            >
+              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Log in
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mt-4 text-center">
+            <Link href="/forgot-password" className="text-sm text-muted-foreground transition hover:text-foreground">
+              Forgot your password?
+            </Link>
+          </p>
+
+          <p className="mt-4 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="font-semibold text-primary hover:underline">
               Sign up
-            </Link>
-          </p>
-          <p className="mt-4 text-center">
-            <Link href="/admin" className="text-sm text-muted-foreground transition hover:text-foreground">
-              → Admin backoffice (demo)
             </Link>
           </p>
         </div>

@@ -7,9 +7,9 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signup } from "@/lib/auth-actions";
+import { resetPassword } from "@/lib/auth-actions";
 
-export default function SignupForm() {
+export default function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export default function SignupForm() {
     }
 
     startTransition(async () => {
-      const result = await signup(formData);
+      const result = await resetPassword(formData);
       if (result?.error) {
         setError(result.error);
       } else if (result?.success) {
@@ -59,12 +59,12 @@ export default function SignupForm() {
             linkClassName="mb-8 flex w-fit justify-center transition-opacity hover:opacity-90 lg:mb-10"
           />
           <p className="max-w-md text-base text-primary-foreground/85 lg:text-lg">
-            Create an account to access your citizenship and document workflows.
+            Choose a strong password to secure your account.
           </p>
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center overflow-y-auto bg-background px-4 py-8 sm:px-6 md:p-8">
+      <div className="flex flex-1 items-center justify-center bg-background px-4 py-10 sm:px-6 md:p-8">
         <div className="w-full max-w-md">
           <BrandLogo
             href="/"
@@ -72,9 +72,9 @@ export default function SignupForm() {
             linkClassName="mb-8 flex justify-center transition-opacity hover:opacity-80 md:hidden"
           />
 
-          <h1 className="text-center text-xl font-bold text-foreground sm:text-2xl">Create your account</h1>
+          <h1 className="text-center text-xl font-bold text-foreground sm:text-2xl">Set new password</h1>
           <p className="mt-1 text-center text-sm text-muted-foreground sm:text-base">
-            Get started with Polonia4u.
+            Enter your new password below.
           </p>
 
           {error && (
@@ -83,38 +83,29 @@ export default function SignupForm() {
             </div>
           )}
 
-          {success && (
-            <div
-              role="status"
-              className="card-shadow mt-6 flex gap-4 rounded-xl border border-primary/25 bg-primary/10 p-4 ring-1 ring-primary/15 dark:border-primary/35 dark:bg-primary/15 dark:ring-primary/20"
-            >
-              <div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full gradient-primary text-primary-foreground shadow-sm"
-                aria-hidden
-              >
-                <CheckCircle2 className="h-5 w-5" strokeWidth={2} />
+          {success ? (
+            <div className="mt-8 flex flex-col items-center gap-4 rounded-xl border border-border bg-muted/30 p-6 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-950/50">
+                <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
-              <p className="min-w-0 pt-0.5 text-sm font-medium leading-relaxed text-foreground">
-                {success}
-              </p>
+              <div>
+                <p className="font-semibold text-foreground">Password updated</p>
+                <p className="mt-1 text-sm text-muted-foreground">{success}</p>
+              </div>
+              <Link
+                href="/login"
+                className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition hover:opacity-90"
+              >
+                Continue to login
+              </Link>
             </div>
-          )}
-
-          {!success && (
+          ) : (
             <form action={handleSubmit} className="mt-8 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="signup-name">Full name</Label>
-                <Input id="signup-name" name="name" type="text" autoComplete="name" placeholder="Jane Doe" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-email">Email</Label>
-                <Input id="signup-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="signup-password">Password</Label>
+                <Label htmlFor="reset-password">New password</Label>
                 <div className="relative">
                   <Input
-                    id="signup-password"
+                    id="reset-password"
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
@@ -136,10 +127,10 @@ export default function SignupForm() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="signup-confirm">Confirm password</Label>
+                <Label htmlFor="reset-confirm">Confirm password</Label>
                 <div className="relative">
                   <Input
-                    id="signup-confirm"
+                    id="reset-confirm"
                     name="confirm"
                     type={showConfirm ? "text" : "password"}
                     autoComplete="new-password"
@@ -153,7 +144,7 @@ export default function SignupForm() {
                     variant="ghost"
                     size="icon"
                     className="absolute right-0 top-0 h-full w-10 rounded-l-none text-muted-foreground hover:text-foreground"
-                    aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}
+                    aria-label={showConfirm ? "Hide password" : "Show password"}
                     onClick={() => setShowConfirm((v) => !v)}
                   >
                     {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -166,17 +157,10 @@ export default function SignupForm() {
                 className="gradient-primary h-11 w-full border-0 text-primary-foreground shadow-sm hover:opacity-95"
               >
                 {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Create account
+                Update password
               </Button>
             </form>
           )}
-
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/login" className="font-semibold text-primary hover:underline">
-              Log in
-            </Link>
-          </p>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { Bell, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 type Props = {
   title: string;
@@ -24,11 +25,12 @@ export default function AdminHeader({ title, onMenuClick }: Props) {
         </Button>
         <h1 className="truncate text-lg font-semibold text-foreground md:text-xl">{title}</h1>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <Button type="button" variant="secondary" size="icon" className="relative rounded-full" aria-label="Notifications">
           <Bell className="h-5 w-5" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-card bg-destructive" />
         </Button>
+        <UserMenu />
       </div>
     </header>
   );
