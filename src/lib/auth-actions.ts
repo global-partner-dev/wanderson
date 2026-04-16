@@ -23,21 +23,21 @@ export async function login(formData: FormData) {
     return { error: "Unexpected error. Please try again." };
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
     .single();
 
-  const role = profile?.role ?? "client";
-
-  switch (role) {
-    case "admin":
-    case "staff":
-      redirect("/admin");
-    default:
-      redirect("/portal");
+  if (profileError) {
+    console.error("Profile fetch failed during login:", profileError.message);
   }
+
+  const role = profile?.role;
+
+  return {
+    redirect: role === "admin" || role === "staff" ? "/admin" : "/portal",
+  };
 }
 
 export async function signup(formData: FormData) {
@@ -47,16 +47,25 @@ export async function signup(formData: FormData) {
   const password = formData.get("password") as string;
   const fullName = formData.get("name") as string;
 
+  const staffSignup = formData.get("staff") === "on";
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { full_name: fullName },
+      data: { full_name: fullName, staff_signup: staffSignup },
     },
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (staffSignup) {
+    return {
+      success:
+        "Check your email to confirm your account. An administrator must approve your staff access before you can use the backoffice.",
+    };
   }
 
   return { success: "Check your email to confirm your account." };

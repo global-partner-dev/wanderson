@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { login } from "@/lib/auth-actions";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -20,6 +22,9 @@ export default function LoginForm() {
       const result = await login(formData);
       if (result?.error) {
         setError(result.error);
+      } else if (result?.redirect) {
+        router.refresh();
+        router.push(result.redirect);
       }
     });
   }

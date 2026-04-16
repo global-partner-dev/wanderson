@@ -43,39 +43,41 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (user && (pathname === "/login" || pathname === "/signup")) {
+  const needsRoleCheck =
+    user &&
+    (pathname === "/login" ||
+      pathname === "/signup" ||
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/portal"));
+
+  if (needsRoleCheck) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .single();
 
-    const role = profile?.role ?? "client";
-    const url = request.nextUrl.clone();
+    const role = profile?.role;
+    const isAdminOrStaff = role === "admin" || role === "staff";
 
-    switch (role) {
-      case "admin":
-      case "staff":
-        url.pathname = "/admin";
-        break;
-      default:
-        url.pathname = "/portal";
+    let redirectTo: string | null = null;
+
+    if (pathname === "/login" || pathname === "/signup") {
+      redirectTo = isAdminOrStaff ? "/admin" : "/portal";
+    } else if (pathname.startsWith("/admin") && !isAdminOrStaff) {
+      redirectTo = "/portal";
+    } else if (pathname.startsWith("/portal") && isAdminOrStaff) {
+      redirectTo = "/admin";
     }
-    return NextResponse.redirect(url);
-  }
 
-  if (user && pathname.startsWith("/admin")) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    const role = profile?.role ?? "client";
-    if (role !== "admin" && role !== "staff") {
+    if (redirectTo) {
       const url = request.nextUrl.clone();
-      url.pathname = "/portal";
-      return NextResponse.redirect(url);
+      url.pathname = redirectTo;
+      const redirectResponse = NextResponse.redirect(url);
+      supabaseResponse.cookies.getAll().forEach((cookie) => {
+        redirectResponse.cookies.set(cookie.name, cookie.value);
+      });
+      return redirectResponse;
     }
   }
 

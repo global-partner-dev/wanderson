@@ -11,10 +11,12 @@ import {
   MessageSquare,
   PieChart,
   Search,
+  UserCheck,
   Video,
   X,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { TabId } from "./admin-types";
@@ -37,10 +39,6 @@ const opsItems: NavItem[] = [
   { id: "tab-transcricao", title: "USC transcription", icon: FileStack },
 ];
 
-const mgmtItems: NavItem[] = [
-  { id: "tab-financeiro", title: "Categorized finance", icon: PieChart },
-];
-
 type Props = {
   activeTab: TabId;
   onSelect: (id: TabId, title: string) => void;
@@ -49,6 +47,15 @@ type Props = {
 };
 
 export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggleMobile }: Props) {
+  const { role } = useAuth();
+
+  const mgmtItems: NavItem[] = [
+    ...(role === "admin"
+      ? [{ id: "tab-staff-approvals" as const, title: "Staff requests", icon: UserCheck }]
+      : []),
+    { id: "tab-financeiro", title: "Categorized finance", icon: PieChart },
+  ];
+
   const renderNavList = (items: NavItem[]) => (
     <ul className="space-y-1 px-3">
       {items.map((item) => {

@@ -160,6 +160,17 @@ export default function SignupForm() {
                   </Button>
                 </div>
               </div>
+              <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 px-3 py-3">
+                <input
+                  type="checkbox"
+                  name="staff"
+                  id="signup-staff"
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-input text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                />
+                <Label htmlFor="signup-staff" className="cursor-pointer text-sm font-normal leading-snug text-foreground">
+                  I am a staff of this company
+                </Label>
+              </div>
               <Button
                 type="submit"
                 disabled={isPending}

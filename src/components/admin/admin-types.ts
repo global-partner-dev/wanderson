@@ -1,4 +1,5 @@
 export type TabId =
+  | "tab-staff-approvals"
   | "tab-crm"
   | "tab-analise"
   | "tab-agenda"

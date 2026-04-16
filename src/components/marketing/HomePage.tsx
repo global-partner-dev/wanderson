@@ -21,6 +21,7 @@ import {
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { SocialNavLinks } from "@/components/marketing/SocialNavLinks";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 const navLinks = [
   { href: "#platform", label: "Platform" },
@@ -38,6 +39,11 @@ const heroSerif = Cormorant_Garamond({
 export default function HomePage() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, role, loading } = useAuth();
+
+  const isLoggedIn = !loading && !!user;
+  const dashboardHref = role === "admin" || role === "staff" ? "/admin" : "/portal";
+  const dashboardLabel = role === "admin" || role === "staff" ? "Backoffice" : "My portal";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 120);
@@ -87,20 +93,31 @@ export default function HomePage() {
           </div>
 
           <div className="hidden items-center gap-2 sm:flex">
-            <Button
-              asChild
-              variant="ghost"
-              className={`rounded-full px-3 py-1.5 text-sm font-medium ${
-                scrolled
-                  ? "text-muted-foreground hover:bg-accent hover:text-foreground"
-                  : "text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-              }`}
-            >
-              <Link href="/login">Log in</Link>
-            </Button>
-            <Button asChild className="gradient-primary rounded-full border-0 px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95">
-              <Link href="/signup">Sign up</Link>
-            </Button>
+            {isLoggedIn ? (
+              <Button asChild className="gradient-primary rounded-full border-0 px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95">
+                <Link href={dashboardHref}>
+                  <LayoutDashboard className="mr-1.5 h-3.5 w-3.5" />
+                  {dashboardLabel}
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className={`rounded-full px-3 py-1.5 text-sm font-medium ${
+                    scrolled
+                      ? "text-muted-foreground hover:bg-accent hover:text-foreground"
+                      : "text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                  }`}
+                >
+                  <Link href="/login">Log in</Link>
+                </Button>
+                <Button asChild className="gradient-primary rounded-full border-0 px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95">
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           <Button
@@ -134,17 +151,28 @@ export default function HomePage() {
                   {item.label}
                 </a>
               ))}
-              <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
-                <Button asChild variant="outline" className="w-full rounded-lg">
-                  <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    Log in
-                  </Link>
-                </Button>
-                <Button asChild className="gradient-primary w-full rounded-lg border-0 text-primary-foreground hover:opacity-95">
-                  <Link href="/signup" onClick={() => setMobileOpen(false)}>
-                    Sign up
-                  </Link>
-                </Button>
+              <div className="mt-2 border-t border-border pt-3">
+                {isLoggedIn ? (
+                  <Button asChild className="gradient-primary w-full rounded-lg border-0 text-primary-foreground hover:opacity-95">
+                    <Link href={dashboardHref} onClick={() => setMobileOpen(false)}>
+                      <LayoutDashboard className="mr-1.5 h-4 w-4" />
+                      {dashboardLabel}
+                    </Link>
+                  </Button>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button asChild variant="outline" className="w-full rounded-lg">
+                      <Link href="/login" onClick={() => setMobileOpen(false)}>
+                        Log in
+                      </Link>
+                    </Button>
+                    <Button asChild className="gradient-primary w-full rounded-lg border-0 text-primary-foreground hover:opacity-95">
+                      <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                        Sign up
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -192,16 +220,34 @@ export default function HomePage() {
               signatures, CRM, and a client portal. GDPR and LGPD aligned.
             </p>
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-3">
-              <Button
-                asChild
-                size="lg"
-                className="gradient-primary h-12 min-w-[10rem] rounded-full border-0 px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-indigo-500/35 hover:opacity-95"
-              >
-                <Link href="/signup">
-                  Get started
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+              {isLoggedIn ? (
+                <Button
+                  asChild
+                  size="lg"
+                  className="gradient-primary h-12 min-w-[10rem] rounded-full border-0 px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-indigo-500/35 hover:opacity-95"
+                >
+                  <Link href={dashboardHref}>
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    {dashboardLabel}
+                  </Link>
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="gradient-primary h-12 min-w-[10rem] rounded-full border-0 px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-indigo-500/35 hover:opacity-95"
+                  >
+                    <Link href="/signup">
+                      Get started
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="link" size="lg" className="h-12 px-5 text-base font-semibold text-white/95 hover:text-white hover:underline">
+                    <Link href="/login">Log in</Link>
+                  </Button>
+                </>
+              )}
               <Button
                 asChild
                 variant="outline"
@@ -209,9 +255,6 @@ export default function HomePage() {
                 className="h-12 min-w-[10rem] rounded-full border-white/30 bg-black/30 px-8 text-base font-semibold text-white backdrop-blur-md hover:bg-black/45 hover:text-white"
               >
                 <Link href="/triage">Try triage wizard</Link>
-              </Button>
-              <Button asChild variant="link" size="lg" className="h-12 px-5 text-base font-semibold text-white/95 hover:text-white hover:underline">
-                <Link href="/login">Log in</Link>
               </Button>
             </div>
           </div>
@@ -382,7 +425,9 @@ export default function HomePage() {
                   size="lg"
                   className="rounded-full border-primary-foreground/30 bg-transparent px-8 text-primary-foreground hover:bg-primary-foreground/10 sm:text-base"
                 >
-                  <Link href="/portal">Client portal</Link>
+                  <Link href={isLoggedIn ? dashboardHref : "/login"}>
+                    {isLoggedIn ? dashboardLabel : "Client portal"}
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -398,13 +443,21 @@ export default function HomePage() {
             Open the backoffice for CRM Kanban or the client portal demo to see both sides of the journey.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/admin" className="inline-flex font-semibold text-primary hover:underline">
-              Admin backoffice →
-            </Link>
-            <span className="hidden text-muted-foreground sm:inline">·</span>
-            <Link href="/portal" className="inline-flex font-semibold text-primary hover:underline">
-              Client portal →
-            </Link>
+            {isLoggedIn ? (
+              <Link href={dashboardHref} className="inline-flex font-semibold text-primary hover:underline">
+                {dashboardLabel} →
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="inline-flex font-semibold text-primary hover:underline">
+                  Admin backoffice →
+                </Link>
+                <span className="hidden text-muted-foreground sm:inline">·</span>
+                <Link href="/login" className="inline-flex font-semibold text-primary hover:underline">
+                  Client portal →
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>

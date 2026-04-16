@@ -139,6 +139,25 @@ export default function ClientPortal() {
           </div>
         </div>
       )}
+      {profile?.staff_approval_status === "pending" && (
+        <div className="border-b border-[#c7d7f5]/80 bg-gradient-to-r from-[#eef3ff] via-[#f0f4ff] to-[#e8f0ff]">
+          <div className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-3 sm:flex-row sm:items-center sm:justify-center sm:gap-2.5">
+            <span className="flex items-center justify-center gap-2.5 text-center text-[13px] font-semibold text-[#1e3a5f] sm:text-left">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#3b6fd9]/15">
+                <Clock className="h-3.5 w-3.5 text-[#2563eb]" />
+              </span>
+              Staff access pending — an administrator must approve your registration before you can open the backoffice.
+            </span>
+          </div>
+        </div>
+      )}
+      {profile?.staff_approval_status === "rejected" && profile?.staff_signup_requested && (
+        <div className="border-b border-neutral-200/80 bg-neutral-50">
+          <div className="mx-auto max-w-6xl px-6 py-3 text-center text-[13px] font-medium text-neutral-700">
+            Your request for staff access was not approved. You can keep using the client portal; contact your admin if this was a mistake.
+          </div>
+        </div>
+      )}
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-30 border-b border-black/[0.04] bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70">

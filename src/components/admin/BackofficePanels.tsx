@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { DetailModule, FinViewId, ModalId, TabId } from "./admin-types";
+import AdminStaffApprovals from "./AdminStaffApprovals";
 import CrmKanban from "./CrmKanban";
 
 /** Matches refer `Dashboard` KPI cards: gradient icon tile + label + value. */
@@ -118,6 +119,10 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
 
   return (
     <>
+      <div className={cn("view-tab flex min-h-0 flex-1 flex-col overflow-hidden", hidden("tab-staff-approvals") && "hidden")}>
+        <AdminStaffApprovals />
+      </div>
+
       {/* CRM: Kanban + table (see CrmKanban) */}
       <div
         className={cn(
