@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CheckCircle2, ChevronRight, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const STEPS = [
   { id: 1, title: "Line of descent", subtitle: "Which ancestor connects you to Poland?" },
   { id: 2, title: "Documents", subtitle: "What do you already have?" },
-  { id: 3, title: "Contact", subtitle: "Only now — we do not store partial submissions" },
+  { id: 3, title: "Contact", subtitle: "Only now: we do not store partial submissions" },
 ] as const;
 
 export default function TriageWizard() {
@@ -36,14 +40,11 @@ export default function TriageWizard() {
         <h2 className="mt-4 text-xl font-bold text-foreground">Lead captured (demo)</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           In production, this step would create the user, push a hot lead to the CRM, and skip any partial data
-          retention — matching your acquisition rules.
+          retention, matching your acquisition rules.
         </p>
-        <a
-          href="/admin"
-          className="gradient-primary mt-6 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm"
-        >
-          View CRM pipeline
-        </a>
+        <Button asChild className="gradient-primary mt-6 border-0 text-primary-foreground shadow-sm hover:opacity-95">
+          <Link href="/admin">View CRM pipeline</Link>
+        </Button>
       </div>
     );
   }
@@ -77,19 +78,18 @@ export default function TriageWizard() {
           <p className="text-sm text-muted-foreground">{STEPS[0].subtitle}</p>
           <div className="grid gap-2 sm:grid-cols-2">
             {["Paternal line", "Maternal line", "Unsure", "Adoption / special case"].map((opt) => (
-              <button
+              <Button
                 key={opt}
                 type="button"
-                onClick={() => setLine(opt)}
+                variant="outline"
                 className={cn(
-                  "rounded-xl border px-4 py-3 text-left text-sm font-semibold transition",
-                  line === opt
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border bg-background hover:bg-muted/60",
+                  "h-auto justify-start rounded-xl px-4 py-3 text-left text-sm font-semibold transition",
+                  line === opt ? "border-primary bg-primary/10 text-foreground hover:bg-primary/15" : "bg-background hover:bg-muted/60",
                 )}
+                onClick={() => setLine(opt)}
               >
                 {opt}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -106,19 +106,18 @@ export default function TriageWizard() {
               "Naturalization papers",
               "Starting from zero",
             ].map((opt) => (
-              <button
+              <Button
                 key={opt}
                 type="button"
-                onClick={() => setDocs(opt)}
+                variant="outline"
                 className={cn(
-                  "rounded-xl border px-4 py-3 text-left text-sm font-semibold transition",
-                  docs === opt
-                    ? "border-primary bg-primary/10 text-foreground"
-                    : "border-border bg-background hover:bg-muted/60",
+                  "h-auto justify-start rounded-xl px-4 py-3 text-left text-sm font-semibold transition",
+                  docs === opt ? "border-primary bg-primary/10 text-foreground hover:bg-primary/15" : "bg-background hover:bg-muted/60",
                 )}
+                onClick={() => setDocs(opt)}
               >
                 {opt}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -129,70 +128,65 @@ export default function TriageWizard() {
           <h2 className="text-lg font-bold">{STEPS[2].title}</h2>
           <p className="text-sm text-muted-foreground">{STEPS[2].subtitle}</p>
           <div className="space-y-3">
-            <label className="block text-xs font-bold uppercase text-muted-foreground">
-              Full name
-              <input
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase text-muted-foreground">Full name</Label>
+              <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-medium"
+                className="rounded-xl font-medium"
                 placeholder="As on your ID"
                 autoComplete="name"
               />
-            </label>
-            <label className="block text-xs font-bold uppercase text-muted-foreground">
-              Email
-              <input
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase text-muted-foreground">Email</Label>
+              <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-medium"
+                className="rounded-xl font-medium"
                 placeholder="you@example.com"
                 autoComplete="email"
               />
-            </label>
-            <label className="block text-xs font-bold uppercase text-muted-foreground">
-              WhatsApp
-              <input
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase text-muted-foreground">WhatsApp</Label>
+              <Input
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm font-medium"
+                className="rounded-xl font-medium"
                 placeholder="+55 …"
                 autoComplete="tel"
               />
-            </label>
+            </div>
           </div>
         </div>
       )}
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
-        <button
-          type="button"
-          disabled={step === 1}
-          onClick={() => setStep((s) => Math.max(1, s - 1))}
-          className="rounded-full border border-border bg-background px-4 py-2 text-sm font-semibold text-foreground disabled:cursor-not-allowed disabled:opacity-40"
-        >
+        <Button type="button" variant="outline" disabled={step === 1} onClick={() => setStep((s) => Math.max(1, s - 1))} className="rounded-full">
           Back
-        </button>
+        </Button>
         {step < 3 ? (
-          <button
+          <Button
             type="button"
             disabled={!canNext}
             onClick={() => setStep((s) => s + 1)}
-            className="gradient-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+            className="gradient-primary rounded-full border-0 text-primary-foreground shadow-sm hover:opacity-95"
           >
             Continue
             <ChevronRight className="h-4 w-4" aria-hidden />
-          </button>
+          </Button>
         ) : (
-          <button
+          <Button
             type="button"
             disabled={!canNext}
             onClick={submit}
-            className="gradient-primary inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+            className="gradient-primary rounded-full border-0 text-primary-foreground shadow-sm hover:opacity-95"
           >
             Submit to CRM
             <ChevronRight className="h-4 w-4" aria-hidden />
-          </button>
+          </Button>
         )}
       </div>
     </div>

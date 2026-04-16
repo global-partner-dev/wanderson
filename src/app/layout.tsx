@@ -11,9 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: {
     default: "Polonia4u",
-    template: "%s - Polonia4u",
+    template: "%s · Polonia4u",
   },
-  description: "Citizenship and document services - demo app",
+  description: "Citizenship and document services (demo app)",
 };
 
 export default function RootLayout({

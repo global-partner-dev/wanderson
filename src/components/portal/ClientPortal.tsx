@@ -11,6 +11,15 @@ import {
   Lock,
   Shield,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 type BillingMode = "ok" | "grace" | "suspended";
 
 const TIMELINE = [
@@ -28,15 +37,15 @@ export default function ClientPortal() {
       <header className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md">
         {billing === "grace" && (
           <div className="border-b border-warning/30 bg-warning/15 px-4 py-2.5 text-center text-sm font-semibold text-warning-foreground">
-            Payment overdue (grace period) — your case stays active.{" "}
-            <button type="button" className="underline underline-offset-2">
+            Payment overdue (grace period). Your case stays active.{" "}
+            <Button type="button" variant="link" className="h-auto p-0 text-inherit underline underline-offset-2">
               Pay now (Pix / boleto / card)
-            </button>
+            </Button>
           </div>
         )}
         {billing === "suspended" && (
           <div className="border-b border-destructive/30 bg-destructive/15 px-4 py-2.5 text-center text-sm font-semibold text-destructive">
-            Account suspended — downloads are disabled until the balance is cleared.
+            Account suspended. Downloads are disabled until the balance is cleared.
           </div>
         )}
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
@@ -45,15 +54,22 @@ export default function ClientPortal() {
           </Link>
           <div className="flex items-center gap-2">
             <span className="hidden text-xs text-muted-foreground sm:inline">Billing demo:</span>
-            <select
-              value={billing}
-              onChange={(e) => setBilling(e.target.value as BillingMode)}
-              className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs font-semibold"
-            >
-              <option value="ok">Current</option>
-              <option value="grace">pending_payment (grace)</option>
-              <option value="suspended">suspended (30+ days)</option>
-            </select>
+            <Select value={billing} onValueChange={(v) => setBilling(v as BillingMode)}>
+              <SelectTrigger className="h-9 w-[min(100vw-2rem,13rem)] text-xs font-semibold sm:w-56">
+                <SelectValue placeholder="Billing state" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="ok" className="text-xs">
+                  Current
+                </SelectItem>
+                <SelectItem value="grace" className="text-xs">
+                  pending_payment (grace)
+                </SelectItem>
+                <SelectItem value="suspended" className="text-xs">
+                  suspended (30+ days)
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </header>
@@ -64,14 +80,14 @@ export default function ClientPortal() {
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Client portal</p>
             <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Welcome back, Silvana</h1>
             <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-              CSR shell with timeline and bidirectional vault. Production: Supabase Storage with RLS — every object scoped
+              CSR shell with timeline and bidirectional vault. Production: Supabase Storage with RLS; every object scoped
               by <code className="rounded bg-muted px-1 py-0.5 text-xs">user_id</code>.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium">
               <Shield className="h-3.5 w-3.5 text-success" aria-hidden />
-              LGPD-ready flows
+              LGPD ready flows
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium">
               <CreditCard className="h-3.5 w-3.5 text-primary" aria-hidden />
@@ -88,9 +104,9 @@ export default function ClientPortal() {
               Only billing actions are available until your subscription is brought current. Vault uploads and EU
               certificate downloads remain revoked for this account state.
             </p>
-            <button type="button" className="gradient-primary mt-6 rounded-full px-8 py-3 text-sm font-semibold text-primary-foreground shadow-sm">
+            <Button type="button" className="gradient-primary mt-6 rounded-full border-0 px-8 text-primary-foreground shadow-sm hover:opacity-95">
               Pay outstanding balance
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="grid gap-6 lg:grid-cols-3">
@@ -130,21 +146,23 @@ export default function ClientPortal() {
                     <ArrowUpFromLine className="h-4 w-4" aria-hidden />
                     Upload
                   </span>
-                  <button type="button" className="text-xs font-bold text-primary hover:underline">
+                  <Button type="button" variant="link" className="h-auto p-0 text-xs font-bold text-primary">
                     Choose files
-                  </button>
+                  </Button>
                 </div>
                 <div className="rounded-xl border border-border bg-muted/30 p-3">
                   <p className="text-xs font-bold uppercase text-muted-foreground">From your advisor</p>
                   <div className="mt-2 flex items-center justify-between gap-2">
                     <span className="truncate text-sm font-medium">Certidão_traduzida.pdf</span>
-                    <button
+                    <Button
                       type="button"
-                      className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-primary hover:underline"
+                      variant="ghost"
+                      size="sm"
+                      className="h-auto shrink-0 gap-1 px-2 py-1 text-xs font-bold text-primary hover:underline"
                     >
                       <ArrowDownToLine className="h-3.5 w-3.5" aria-hidden />
                       Download
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

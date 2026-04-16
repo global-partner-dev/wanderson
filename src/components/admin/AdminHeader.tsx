@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   title: string;
@@ -9,22 +10,25 @@ type Props = {
 
 export default function AdminHeader({ title, onMenuClick }: Props) {
   return (
-    <header className="z-10 flex h-16 shrink-0 items-center justify-between border-b border-border bg-card px-4 md:px-6">
-      <div className="flex items-center gap-3">
-        <button type="button" onClick={onMenuClick} className="text-muted-foreground hover:text-foreground md:hidden">
-          <Menu className="h-6 w-6" />
-        </button>
-        <h2 className="text-lg font-bold text-foreground">{title}</h2>
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-border bg-card px-3 md:h-16 md:px-6">
+      <div className="flex min-w-0 items-center gap-2 md:gap-3">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={onMenuClick}
+          className="-ml-1 md:hidden"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+        <h1 className="truncate text-lg font-semibold text-foreground md:text-xl">{title}</h1>
       </div>
       <div className="flex items-center gap-4">
-        <button
-          type="button"
-          className="relative rounded-full bg-muted p-2 text-muted-foreground transition hover:text-primary"
-          aria-label="Notifications"
-        >
+        <Button type="button" variant="secondary" size="icon" className="relative rounded-full" aria-label="Notifications">
           <Bell className="h-5 w-5" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full border border-card bg-destructive" />
-        </button>
+        </Button>
       </div>
     </header>
   );

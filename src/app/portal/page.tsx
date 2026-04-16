@@ -15,7 +15,7 @@ export default function PortalPage() {
           ← Marketing site
         </Link>
         <span className="mx-2">·</span>
-        <span>Demo only — authenticated CSR shell in production</span>
+        <span>Demo only; authenticated CSR shell in production</span>
       </footer>
     </div>
   );

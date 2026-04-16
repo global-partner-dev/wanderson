@@ -1,7 +1,53 @@
 "use client";
 
+import type { ReactNode } from "react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import type { ModalId } from "./admin-types";
+
+function ModalChrome({
+  title,
+  titleId,
+  description,
+  onClose,
+  children,
+  footer,
+}: {
+  title: string;
+  titleId?: string;
+  description?: string;
+  onClose: () => void;
+  children: ReactNode;
+  footer?: ReactNode;
+}) {
+  return (
+    <div className="w-full max-w-lg overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-2xl">
+      <div className="flex items-start justify-between gap-4 border-b border-border px-5 py-4 sm:px-6 sm:py-5">
+        <div className="min-w-0">
+          <h3 id={titleId} className="text-lg font-semibold tracking-tight text-foreground">
+            {title}
+          </h3>
+          {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+        </div>
+        <Button type="button" variant="ghost" size="icon" onClick={onClose} className="shrink-0" aria-label="Close">
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+      <div className="px-5 py-5 sm:px-6 sm:py-6">{children}</div>
+      {footer ? <div className="border-t border-border bg-muted/30 px-5 py-4 sm:px-6">{footer}</div> : null}
+    </div>
+  );
+}
 
 const whatsappIcon = (
   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -27,38 +73,40 @@ export default function AdminModals({ open, onClose, onOpen }: Props) {
         aria-modal="true"
         aria-labelledby="modal-nova-title"
       >
-        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b bg-slate-50 p-5">
-            <h3 id="modal-nova-title" className="font-bold text-slate-800">
-              Generate new proposal
-            </h3>
-            <button type="button" onClick={() => onClose("modal-nova-proposta")} className="text-slate-400 transition hover:text-slate-700">
-              ×
-            </button>
-          </div>
-          <div className="space-y-4 p-6 text-sm">
-            <p className="mb-2 text-slate-600">
-              This link will start a <strong className="text-blue-600">120-hour</strong> countdown (urgency trigger) as soon as the client opens it.
+        <ModalChrome
+          title="Generate new proposal"
+          titleId="modal-nova-title"
+          description="Creates a timed link your team can send to the client."
+          onClose={() => onClose("modal-nova-proposta")}
+        >
+          <div className="space-y-4 text-sm">
+            <p className="text-muted-foreground">
+              The link starts a <span className="font-medium text-primary">120 hour</span> countdown when first opened.
             </p>
-            <div>
-              <label className="mb-1 block text-xs font-bold text-slate-500">Select client / lead</label>
-              <select className="w-full rounded-lg border border-slate-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option>João Pedro (document search)</option>
-                <option>Fernanda Lima (citizenship)</option>
-              </select>
+            <div className="space-y-2">
+              <Label className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Client / lead</Label>
+              <Select defaultValue="joao">
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select client" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="joao">João Pedro (document search)</SelectItem>
+                  <SelectItem value="fernanda">Fernanda Lima (citizenship)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <button
+            <Button
               type="button"
               onClick={() => {
                 onClose("modal-nova-proposta");
                 onOpen("modal-enviar-proposta");
               }}
-              className="mt-2 w-full rounded-lg bg-blue-600 py-3.5 font-bold text-white shadow-sm transition hover:bg-blue-700"
+              className="gradient-primary w-full border-0 py-3 text-primary-foreground shadow-sm hover:opacity-95"
             >
               Generate dynamic link
-            </button>
+            </Button>
           </div>
-        </div>
+        </ModalChrome>
       </div>
 
       <div
@@ -69,27 +117,21 @@ export default function AdminModals({ open, onClose, onOpen }: Props) {
         role="dialog"
         aria-modal="true"
       >
-        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b bg-slate-50 p-5">
-            <h3 className="font-bold text-slate-800">Send generated proposal</h3>
-            <button type="button" onClick={() => onClose("modal-enviar-proposta")} className="text-slate-400 transition hover:text-slate-700">
-              ×
-            </button>
-          </div>
-          <div className="space-y-4 p-6 text-sm">
-            <div className="break-all rounded-lg border border-green-200 bg-green-50 p-3 text-center text-xs font-bold text-green-800">
+        <ModalChrome title="Send proposal" description="Copy or share the generated URL." onClose={() => onClose("modal-enviar-proposta")}>
+          <div className="space-y-4 text-sm">
+            <div className="break-all rounded-lg border border-border bg-muted/50 px-3 py-3 text-center font-mono text-xs text-foreground">
               https://polonia4u.com/proposal/abc123xyz
             </div>
-            <button
+            <Button
               type="button"
               onClick={() => onClose("modal-enviar-proposta")}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] py-3 font-bold text-white shadow-sm transition hover:bg-[#1DA851]"
+              className="flex w-full gap-2 bg-[#25D366] py-3 text-white shadow-sm hover:bg-[#1ebe57]"
             >
               {whatsappIcon}
-              Send link via WhatsApp
-            </button>
+              Send via WhatsApp
+            </Button>
           </div>
-        </div>
+        </ModalChrome>
       </div>
 
       <div
@@ -100,31 +142,27 @@ export default function AdminModals({ open, onClose, onOpen }: Props) {
         role="dialog"
         aria-modal="true"
       >
-        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b bg-slate-50 p-5">
-            <h3 className="font-bold text-slate-800">Contract engine</h3>
-            <button type="button" onClick={() => onClose("modal-contrato")} className="text-slate-400">
-              ×
-            </button>
-          </div>
-          <div className="space-y-4 p-6 text-sm">
-            <div className="rounded-xl border bg-slate-50 p-4">
-              <p className="flex justify-between font-bold">
-                Client: <span className="font-medium text-slate-600">Silvana Gomes</span>
+        <ModalChrome title="Contract preview" description="Review values before merging the PDF." onClose={() => onClose("modal-contrato")}>
+          <div className="space-y-4 text-sm">
+            <div className="rounded-xl border border-border bg-muted/30 p-4">
+              <p className="flex justify-between gap-4 font-medium text-foreground">
+                <span className="text-muted-foreground">Client</span>
+                <span>Silvana Gomes</span>
               </p>
-              <p className="flex justify-between border-t pt-2 font-bold">
-                Base amount: <span className="font-bold text-blue-700">R$ 1,250.00</span>
+              <p className="mt-3 flex justify-between gap-4 border-t border-border pt-3 font-medium">
+                <span className="text-muted-foreground">Base amount</span>
+                <span className="tabular-nums text-primary">R$ 1,250.00</span>
               </p>
             </div>
-            <button
+            <Button
               type="button"
               onClick={() => onClose("modal-contrato")}
-              className="mt-2 w-full rounded-lg bg-blue-600 py-3.5 font-bold text-white"
+              className="gradient-primary w-full border-0 py-3 text-primary-foreground shadow-sm hover:opacity-95"
             >
-              Merge data and send
-            </button>
+              Merge and send
+            </Button>
           </div>
-        </div>
+        </ModalChrome>
       </div>
 
       <div
@@ -135,24 +173,27 @@ export default function AdminModals({ open, onClose, onOpen }: Props) {
         role="dialog"
         aria-modal="true"
       >
-        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
-          <div className="flex items-center justify-between border-b bg-red-50 p-5">
-            <h3 className="font-bold text-red-700">Rejection reason</h3>
-            <button type="button" onClick={() => onClose("modal-recusa")} className="text-slate-400">
-              ×
-            </button>
+        <ModalChrome
+          title="Reject document"
+          description="This note is stored on the case for your team and the client timeline."
+          onClose={() => onClose("modal-recusa")}
+        >
+          <div className="space-y-4">
+            <Textarea
+              className="min-h-[120px] resize-y"
+              rows={4}
+              defaultValue="The submitted certificate is illegible."
+            />
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button type="button" variant="outline" onClick={() => onClose("modal-recusa")}>
+                Cancel
+              </Button>
+              <Button type="button" variant="destructive" onClick={() => onClose("modal-recusa")}>
+                Confirm rejection
+              </Button>
+            </div>
           </div>
-          <div className="p-6">
-            <textarea className="w-full rounded-xl border p-4 text-sm" rows={4} defaultValue="The submitted certificate is illegible." />
-            <button
-              type="button"
-              onClick={() => onClose("modal-recusa")}
-              className="mt-4 w-full rounded-lg bg-red-600 py-3.5 font-bold text-white"
-            >
-              Confirm rejection
-            </button>
-          </div>
-        </div>
+        </ModalChrome>
       </div>
     </>
   );

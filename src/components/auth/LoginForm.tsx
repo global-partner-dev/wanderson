@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,12 +14,9 @@ export default function LoginForm() {
     e.preventDefault();
   }
 
-  const inputClass =
-    "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring";
-
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
-      {/* Left — gradient panel (refer auth) */}
+      {/* Left: gradient panel (refer auth) */}
       <div className="relative hidden flex-col items-center justify-center overflow-hidden md:flex md:w-2/5 lg:w-1/2 gradient-primary p-8 lg:p-12">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute left-10 top-20 h-40 w-40 rounded-full border-2 border-primary-foreground lg:h-72 lg:w-72" />
@@ -30,7 +30,7 @@ export default function LoginForm() {
             </span>
           </Link>
           <p className="max-w-md text-base text-primary-foreground/85 lg:text-lg">
-            Sign in to continue your citizenship and document workflows — same calm interface as our public site.
+            Sign in to continue your citizenship and document workflows, with the same calm interface as our public site.
           </p>
         </div>
       </div>
@@ -50,48 +50,36 @@ export default function LoginForm() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            <div>
-              <label htmlFor="login-email" className="mb-1.5 block text-sm font-medium text-foreground">
-                Email
-              </label>
-              <input
-                id="login-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                className={`${inputClass} mt-1.5`}
-              />
+            <div className="space-y-2">
+              <Label htmlFor="login-email">Email</Label>
+              <Input id="login-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
             </div>
-            <div>
-              <label htmlFor="login-password" className="mb-1.5 block text-sm font-medium text-foreground">
-                Password
-              </label>
-              <div className="relative mt-1.5">
-                <input
+            <div className="space-y-2">
+              <Label htmlFor="login-password">Password</Label>
+              <div className="relative">
+                <Input
                   id="login-password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className={`${inputClass} pr-10`}
+                  className="pr-10"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full w-10 rounded-l-none text-muted-foreground hover:text-foreground"
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPassword((v) => !v)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                </Button>
               </div>
             </div>
-            <button
-              type="submit"
-              className="gradient-primary h-11 w-full rounded-lg border-0 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95"
-            >
+            <Button type="submit" className="gradient-primary h-11 w-full border-0 text-primary-foreground shadow-sm hover:opacity-95">
               Log in
-            </button>
+            </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">

@@ -18,7 +18,7 @@ const initialDetail: Record<DetailModule, boolean> = {
 
 export default function AdminApp() {
   const [activeTab, setActiveTab] = useState<TabId>("tab-crm");
-  const [pageTitle, setPageTitle] = useState("CRM · Kanban");
+  const [pageTitle, setPageTitle] = useState("CRM Kanban");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState<Record<DetailModule, boolean>>(initialDetail);
   const [finTab, setFinTab] = useState<FinViewId>("fin-geral");

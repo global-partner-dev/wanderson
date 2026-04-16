@@ -15,12 +15,13 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import type { TabId } from "./admin-types";
 
 type NavItem = { id: TabId; title: string; icon: React.ComponentType<{ className?: string }> };
 
 const salesItems: NavItem[] = [
-  { id: "tab-crm", title: "CRM · Kanban", icon: Filter },
+  { id: "tab-crm", title: "CRM Kanban", icon: Filter },
   { id: "tab-analise", title: "Preliminary analysis", icon: FileText },
   { id: "tab-agenda", title: "Video call agenda", icon: Video },
   { id: "tab-prop-vendas", title: "Proposals (sales)", icon: MessageSquare },
@@ -54,19 +55,19 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
         const Icon = item.icon;
         return (
           <li key={item.id}>
-            <button
+            <Button
               type="button"
+              variant="ghost"
               onClick={() => onSelect(item.id, item.title)}
               className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors",
-                active
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                "h-auto w-full justify-start gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                active && "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground",
+                !active && "text-sidebar-foreground",
               )}
             >
               <Icon className="h-5 w-5 shrink-0" />
               <span className="min-w-0 flex-1 leading-snug">{item.title}</span>
-            </button>
+            </Button>
           </li>
         );
       })}
@@ -89,14 +90,16 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
                 Polonia4u<span className="text-primary">.</span>
               </span>
             </div>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={onToggleMobile}
-              className="text-sidebar-foreground/80 hover:text-sidebar-accent-foreground md:hidden"
+              className="text-sidebar-foreground/80 hover:bg-transparent hover:text-sidebar-accent-foreground md:hidden"
               aria-label="Close menu"
             >
               <X className="h-6 w-6" />
-            </button>
+            </Button>
           </div>
 
           <nav className="custom-scroll flex-1 overflow-y-auto py-4">

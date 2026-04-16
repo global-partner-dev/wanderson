@@ -10,8 +10,15 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { Badge, ScheduleDateBadge, type BadgeVariant } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { DetailModule, FinViewId, ModalId, TabId } from "./admin-types";
 import CrmKanban from "./CrmKanban";
@@ -48,7 +55,7 @@ function DashboardStyleKpiCard({
   );
 }
 
-/** Compact summary for finance sub-tabs — same KPI row pattern as refer Dashboard. */
+/** Compact summary for finance sub-tabs; same KPI row pattern as refer Dashboard. */
 function FinanceSummaryStrip({
   accent,
   label,
@@ -80,12 +87,16 @@ function FinanceSummaryStrip({
   );
 }
 
-/** Category chip colors — aligned with refer `Settings` role badges (admin/manager/agent). */
-const financeCategoryBadge: Record<string, string> = {
-  CITIZENSHIP: "border-transparent bg-primary text-primary-foreground",
-  "TRANSCR.": "border-transparent bg-success text-success-foreground",
-  "DOC SEARCH": "border-transparent bg-warning text-warning-foreground",
+/** Finance category → vibrant badge variant. */
+const financeCategoryVariant: Record<string, BadgeVariant> = {
+  CITIZENSHIP: "default",
+  "TRANSCR.": "success",
+  "DOC SEARCH": "warning",
 };
+
+function categoryVariant(code: string): BadgeVariant {
+  return financeCategoryVariant[code] ?? "secondary";
+}
 
 const waSmall = (
   <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -107,7 +118,7 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
 
   return (
     <>
-      {/* CRM — Kanban + table (see CrmKanban) */}
+      {/* CRM: Kanban + table (see CrmKanban) */}
       <div
         className={cn(
           "view-tab flex min-h-0 flex-1 flex-col overflow-hidden bg-background p-3 fade-in md:p-6",
@@ -121,63 +132,78 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
       <div className={cn("view-tab flex flex-1 flex-col overflow-hidden bg-background fade-in", hidden("tab-analise") && "hidden")}>
         <div className={cn("flex flex-1 flex-col overflow-hidden p-6", detailOpen.analise && "hidden")} id="analise-lista">
           <div className="mb-6">
-            <h3 className="text-lg font-bold text-foreground">Preliminary analysis vault</h3>
+            <h3 className="text-lg font-semibold text-foreground">Preliminary analysis vault</h3>
             <p className="text-sm text-muted-foreground">Documents submitted in the eligibility test for review.</p>
           </div>
-          <div className="custom-scroll refer-table-wrap flex-1 overflow-y-auto">
-            <table className="refer-table min-w-[600px]">
-              <thead className="refer-thead">
-                <tr>
-                  <th className="px-6 py-4">Lead</th>
-                  <th className="px-6 py-4">Internal status</th>
-                  <th className="px-6 py-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b bg-warning/10">
-                  <td className="px-6 py-4 font-bold text-foreground">Roberto Carlos</td>
-                  <td className="px-6 py-4">
-                    <span className="rounded border border-warning/30 bg-warning/15 px-2 py-1 text-xs font-bold text-warning">
-                      Awaiting review
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() => setDetail("analise", true)}
-                      className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold"
-                    >
-                      Review
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <Card className="card-shadow flex min-h-0 flex-1 flex-col border-0 overflow-hidden">
+            <CardContent className="custom-scroll flex min-h-0 flex-1 flex-col overflow-auto p-6">
+              <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+                <Table>
+                  <TableHeader className="refer-table-header">
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead>Lead</TableHead>
+                      <TableHead>Internal status</TableHead>
+                      <TableHead className="text-right">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow className="transition-colors hover:bg-muted/50">
+                      <TableCell className="font-medium text-foreground">Roberto Carlos</TableCell>
+                      <TableCell>
+                        <Badge variant="warning" className="uppercase">
+                          Awaiting review
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <button
+                          type="button"
+                          onClick={() => setDetail("analise", true)}
+                          className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold"
+                        >
+                          Review
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <div className={cn("flex flex-1 flex-col overflow-hidden bg-background fade-in md:flex-row", !detailOpen.analise && "hidden")} id="analise-detalhe">
-          <div className="custom-scroll flex w-full flex-col overflow-y-auto border-r bg-muted/40 p-6 md:w-1/3">
-            <button type="button" onClick={() => setDetail("analise", false)} className="mb-6 w-max text-sm font-bold text-muted-foreground">
+        <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen.analise && "hidden")} id="analise-detalhe">
+          <aside className="custom-scroll flex w-full flex-col overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
+            <button
+              type="button"
+              onClick={() => setDetail("analise", false)}
+              className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            >
               ← Back
             </button>
-            <h3 className="text-xl font-bold">Roberto Carlos</h3>
-            <div className="mt-8 space-y-3">
-              <button type="button" className="w-full rounded-lg bg-success py-3 text-sm font-bold text-success-foreground">
-                Viable! Schedule call
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Lead</p>
+            <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Roberto Carlos</h3>
+            <div className="mt-8 space-y-2.5">
+              <button type="button" className="w-full rounded-lg bg-success py-2.5 text-sm font-semibold text-success-foreground shadow-sm transition hover:opacity-95">
+                Viable · schedule call
               </button>
-              <button type="button" className="w-full rounded-lg bg-warning py-3 text-sm font-bold text-warning-foreground">
+              <button
+                type="button"
+                className="w-full rounded-lg border border-warning/50 bg-background py-2.5 text-sm font-semibold text-warning shadow-sm transition hover:bg-warning/5"
+              >
                 Sell search
               </button>
-              <button type="button" className="w-full rounded-lg border border-destructive/30 bg-card py-3 text-sm font-bold text-destructive">
+              <button
+                type="button"
+                className="w-full rounded-lg border border-destructive/40 bg-background py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/5"
+              >
                 Not viable
               </button>
             </div>
-          </div>
-          <div className="flex w-full flex-col overflow-y-auto p-6 md:w-2/3">
-            <h3 className="mb-4 border-b pb-4 font-bold">Documents submitted</h3>
-            <div className="flex items-center justify-between rounded-xl border bg-muted/50 p-4">
-              <span className="text-sm font-bold">Passaporte_Velho.jpg</span>
-              <button type="button" className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold text-primary">
+          </aside>
+          <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-background p-6 md:p-8">
+            <h3 className="mb-6 text-base font-semibold text-foreground">Documents submitted</h3>
+            <div className="card-shadow flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
+              <span className="min-w-0 truncate text-sm font-medium text-foreground">Passaporte_Velho.jpg</span>
+              <button type="button" className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-primary shadow-sm transition hover:bg-muted">
                 View image
               </button>
             </div>
@@ -189,7 +215,7 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
       <div className={cn("view-tab custom-scroll flex-1 overflow-y-auto bg-muted/50 p-4 fade-in md:p-6", hidden("tab-agenda") && "hidden")}>
         <div className="mb-6 flex flex-col items-start justify-between md:flex-row md:items-center">
           <div>
-            <h3 className="text-2xl font-bold text-foreground">Today&apos;s agenda</h3>
+            <h3 className="text-2xl font-semibold text-foreground">Today&apos;s agenda</h3>
             <p className="mt-1 text-sm text-muted-foreground">Friday, April 24</p>
           </div>
           <div className="mt-4 flex w-full gap-3 md:mt-0 md:w-auto">
@@ -204,16 +230,21 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            <div className="card-shadow flex flex-col gap-4 rounded-xl border border-border border-l-4 border-l-primary bg-card p-5 md:flex-row md:items-center md:justify-between">
-              <div>
-                <div className="mb-2 flex items-center gap-3">
-                  <span className="rounded bg-primary/10 px-2 py-1 text-xs font-bold text-primary">14:00 - 14:30</span>
-                  <span className="flex items-center gap-1 text-xs font-bold text-destructive">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-destructive" /> In 10 min
-                  </span>
+            <div className="card-shadow flex flex-col gap-4 rounded-xl border border-border bg-card p-5 md:flex-row md:items-start md:justify-between">
+              <div className="flex gap-4">
+                <ScheduleDateBadge dateLine="Apr 24" timeLine="14:00" />
+                <div className="min-w-0">
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <Badge variant="warning">Meeting</Badge>
+                    <Badge variant="info">Scheduled</Badge>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-destructive">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-destructive" />
+                      In 10 min
+                    </span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-foreground">Souza family (Silvana)</h4>
+                  <p className="mt-1 text-sm text-muted-foreground">Citizenship closing (holder + 2 minors)</p>
                 </div>
-                <h4 className="text-lg font-bold text-foreground">Souza family (Silvana)</h4>
-                <p className="mt-1 text-sm text-muted-foreground">Citizenship closing (holder + 2 minors)</p>
               </div>
               <div className="mt-2 flex w-full gap-2 md:mt-0 md:w-auto">
                 <button type="button" className="flex-1 rounded-lg bg-muted px-4 py-2.5 text-sm font-bold text-foreground hover:bg-muted/80 md:flex-none">
@@ -253,7 +284,7 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
       {/* Sales proposals */}
       <div className={cn("view-tab flex-1 overflow-auto bg-background p-6", hidden("tab-prop-vendas") && "hidden")}>
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-foreground">Active sales proposals</h3>
+          <h3 className="text-lg font-semibold text-foreground">Active sales proposals</h3>
           <button
             type="button"
             onClick={() => openModal("modal-nova-proposta")}
@@ -262,97 +293,101 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
             + Generate new proposal (120h link)
           </button>
         </div>
-        <div className="refer-table-wrap">
-          <table className="refer-table">
-            <thead className="refer-thead">
-              <tr>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Service</th>
-                <th className="px-6 py-4">Sales rep status</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-6 py-4 font-bold">João Pedro</td>
-                <td className="px-6 py-4">Document search</td>
-                <td className="px-6 py-4">
-                  <span className="rounded bg-primary/15 px-2 py-1 text-xs font-bold text-primary">In negotiation</span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => openModal("modal-enviar-proposta")}
-                      className="flex items-center gap-1 rounded border border-success bg-success/10 px-3 py-1.5 text-xs font-bold text-success transition hover:bg-success/15"
-                    >
-                      {waSmall} WhatsApp
-                    </button>
-                    <button type="button" className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-muted/50">
-                      Email
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Card className="card-shadow border-0">
+          <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+            <Table>
+              <TableHeader className="refer-table-header">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>Client</TableHead>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Sales rep status</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium text-foreground">João Pedro</TableCell>
+                  <TableCell>Document search</TableCell>
+                  <TableCell>
+                    <Badge variant="default">In negotiation</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => openModal("modal-enviar-proposta")}
+                        className="flex items-center gap-1 rounded border border-success bg-success/10 px-3 py-1.5 text-xs font-bold text-success transition hover:bg-success/15"
+                      >
+                        {waSmall} WhatsApp
+                      </button>
+                      <button type="button" className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-muted/50">
+                        Email
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Pending proposals */}
       <div className={cn("view-tab flex-1 overflow-auto bg-background p-6", hidden("tab-prop-aguardando") && "hidden")}>
-        <h3 className="mb-6 text-lg font-bold text-foreground">Awaiting signature / payment</h3>
-        <div className="refer-table-wrap">
-          <table className="refer-table">
-            <thead className="refer-thead">
-              <tr>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Amount</th>
-                <th className="px-6 py-4">Contract status</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-warning/10">
-                <td className="px-6 py-4 font-bold">Marcos Silva</td>
-                <td className="px-6 py-4 font-bold">R$ 200,00</td>
-                <td className="px-6 py-4">
-                  <span className="rounded border border-warning/30 bg-warning/15 px-2 py-1 text-xs font-bold text-warning">
-                    Awaiting PIX
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button type="button" className="rounded border border-border bg-card px-4 py-1.5 text-xs font-bold text-foreground transition hover:bg-muted/50">
-                    Request payment
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <h3 className="mb-6 text-lg font-semibold text-foreground">Awaiting signature / payment</h3>
+        <Card className="card-shadow border-0">
+          <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+            <Table>
+              <TableHeader className="refer-table-header">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>Client</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Contract status</TableHead>
+                  <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow className="transition-colors hover:bg-muted/50">
+                  <TableCell className="font-medium text-foreground">Marcos Silva</TableCell>
+                  <TableCell className="font-semibold tabular-nums">R$ 200,00</TableCell>
+                  <TableCell>
+                    <Badge variant="warning">Awaiting PIX</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <button type="button" className="rounded border border-border bg-card px-4 py-1.5 text-xs font-bold text-foreground transition hover:bg-muted/50">
+                      Request payment
+                    </button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Contracts */}
       <div className={cn("view-tab flex-1 overflow-auto bg-background p-6", hidden("tab-contratos") && "hidden")}>
-        <h3 className="mb-6 text-lg font-bold">Active contract database</h3>
-        <div className="refer-table-wrap">
-          <table className="refer-table">
-            <thead className="refer-thead">
-              <tr>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Service</th>
-                <th className="px-6 py-4">Signature date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-6 py-4 font-bold">Silvana Gomes</td>
-                <td className="px-6 py-4">Citizenship</td>
-                <td className="px-6 py-4">Apr 12, 2026</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <h3 className="mb-6 text-lg font-semibold text-foreground">Active contract database</h3>
+        <Card className="card-shadow border-0">
+          <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+            <Table>
+              <TableHeader className="refer-table-header">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>Client</TableHead>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Signature date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium text-foreground">Silvana Gomes</TableCell>
+                  <TableCell>Citizenship</TableCell>
+                  <TableCell>Apr 12, 2026</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Citizenship section */}
@@ -391,7 +426,7 @@ function CitizenshipSection({
     <div className="view-tab flex flex-1 flex-col overflow-hidden bg-background fade-in">
       <div className={cn("flex flex-1 flex-col overflow-hidden p-6", detailOpen && "hidden")}>
         <div className="mb-6 flex shrink-0 flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-          <h3 className="text-lg font-bold text-foreground">Citizenship cases</h3>
+          <h3 className="text-lg font-semibold text-foreground">Citizenship cases</h3>
           <div className="flex w-full gap-2 md:w-auto">
             <button type="button" className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-bold text-foreground transition hover:bg-muted/50">
               + Import legacy case
@@ -401,61 +436,71 @@ function CitizenshipSection({
             </button>
           </div>
         </div>
-        <div className="custom-scroll refer-table-wrap flex-1 overflow-y-auto border-border">
-          <table className="refer-table min-w-[700px]">
-            <thead className="refer-thead sticky top-0 z-10">
-              <tr>
-                <th className="px-6 py-4">Holder / family</th>
-                <th className="px-6 py-4">Status / timeline</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr className="bg-warning/15">
-                <td className="px-6 py-4 font-bold text-foreground">Silvana Gomes</td>
-                <td className="px-6 py-4">
-                  <span className="flex w-max items-center gap-1 rounded-md border border-warning/30 bg-warning/15 px-2.5 py-1 text-xs font-bold text-warning">
-                    Validate documents
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button
-                    type="button"
-                    onClick={() => setDetail("cidadania", true)}
-                    className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold transition hover:bg-muted/50"
-                  >
-                    Open vault
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Card className="card-shadow flex min-h-0 flex-1 flex-col border-0 overflow-hidden">
+          <CardContent className="custom-scroll flex min-h-0 flex-1 flex-col overflow-auto p-6">
+            <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+              <Table>
+                <TableHeader className="refer-table-header sticky top-0 z-10 bg-card">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Holder / family</TableHead>
+                    <TableHead>Status / timeline</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="transition-colors hover:bg-muted/50">
+                    <TableCell className="font-medium text-foreground">Silvana Gomes</TableCell>
+                    <TableCell>
+                      <Badge variant="warning" className="w-max">
+                        Validate documents
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button
+                        type="button"
+                        onClick={() => setDetail("cidadania", true)}
+                        className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold transition hover:bg-muted/50"
+                      >
+                        Open vault
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className={cn("flex flex-1 flex-col overflow-hidden bg-background fade-in md:flex-row", !detailOpen && "hidden")}>
-        <div className="custom-scroll flex h-full w-full shrink-0 flex-col overflow-y-auto border-r bg-muted/40 p-6 md:w-1/3">
+      <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
+        <aside className="custom-scroll flex h-full w-full shrink-0 flex-col overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <button
             type="button"
             onClick={() => setDetail("cidadania", false)}
-            className="mb-6 flex w-max items-center gap-1 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-bold text-muted-foreground transition hover:text-foreground"
+            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             ← Back
           </button>
-          <h3 className="text-xl font-bold">Silvana Gomes</h3>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Case</p>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Silvana Gomes</h3>
           <div className="mt-8 space-y-4">
-            <label className="mb-3 block text-xs font-bold uppercase text-muted-foreground">Timeline status</label>
-            <select className="w-full rounded-lg border p-3 text-sm font-bold" defaultValue="sworn">
-              <option value="analysis">Document analysis</option>
-              <option value="sworn">Sworn translation</option>
-            </select>
-            <button type="button" className="w-full rounded-lg bg-foreground py-3 text-sm font-bold text-background shadow-md">
+            <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">Timeline status</label>
+            <Select defaultValue="sworn">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose status" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="analysis">Document analysis</SelectItem>
+                <SelectItem value="sworn">Sworn translation</SelectItem>
+              </SelectContent>
+            </Select>
+            <button type="button" className="w-full rounded-lg bg-foreground py-2.5 text-sm font-semibold text-background shadow-sm transition hover:opacity-95">
               Save update
             </button>
           </div>
-        </div>
-        <div className="flex w-full flex-col overflow-y-auto p-6 md:w-2/3">
-          <div className="mb-6 flex flex-col items-start justify-between gap-4 border-b border-border pb-4 sm:flex-row sm:items-center">
-            <h3 className="text-lg font-bold text-foreground">Document audit</h3>
+        </aside>
+        <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-background p-6 md:p-8">
+          <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <h3 className="text-base font-semibold text-foreground">Document audit</h3>
             <button
               type="button"
               onClick={() => openModal("modal-contrato")}
@@ -464,27 +509,29 @@ function CitizenshipSection({
               Generate contract PDF
             </button>
           </div>
-          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/35 bg-primary/5 p-5 text-center">
-            <span className="text-sm font-bold text-primary">Share document with client</span>
-            <p className="mb-3 mt-1 text-xs text-primary/90">The file uploaded here will appear in the client portal.</p>
-            <button type="button" className="refer-btn-primary px-4 py-2.5 text-xs transition">
+          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-primary/25 bg-muted/20 p-6 text-center">
+            <span className="text-sm font-semibold text-foreground">Share document with client</span>
+            <p className="mb-4 mt-1 max-w-sm text-xs text-muted-foreground">Uploaded files appear in the client portal vault.</p>
+            <button type="button" className="refer-btn-primary px-4 py-2 text-xs transition">
               Attach and send
             </button>
           </div>
-          <div className="flex flex-col rounded-xl border-2 border-warning/35 bg-warning/10 p-5">
-            <h4 className="text-sm font-bold">Certidao_Nascimento_Joao.pdf</h4>
-            <p className="mb-2 mt-0.5 text-[11px] font-bold text-warning">Awaiting audit</p>
-            <div className="mt-2 flex gap-2 border-t border-warning/25 pt-4">
-              <button type="button" className="refer-btn-primary flex-1 py-2.5 text-xs">
+          <div className="card-shadow rounded-xl border border-border border-l-4 border-l-warning bg-card p-5">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <h4 className="text-sm font-semibold text-foreground">Certidao_Nascimento_Joao.pdf</h4>
+              <Badge variant="warning">Awaiting audit</Badge>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
+              <button type="button" className="refer-btn-primary flex-1 py-2.5 text-xs min-[400px]:flex-none min-[400px]:px-4">
                 View
               </button>
-              <button type="button" className="flex-1 rounded-lg bg-success py-2.5 text-xs font-bold text-success-foreground shadow-sm transition hover:opacity-95">
+              <button type="button" className="flex-1 rounded-lg bg-success py-2.5 text-xs font-semibold text-success-foreground shadow-sm transition hover:opacity-95 min-[400px]:flex-none min-[400px]:px-4">
                 Approve
               </button>
               <button
                 type="button"
                 onClick={() => openModal("modal-recusa")}
-                className="flex-1 rounded-lg border border-destructive/35 bg-card py-2.5 text-xs font-bold text-destructive shadow-sm transition hover:bg-destructive/10"
+                className="flex-1 rounded-lg border border-destructive/40 bg-background py-2.5 text-xs font-semibold text-destructive transition hover:bg-destructive/5 min-[400px]:flex-none min-[400px]:px-4"
               >
                 Reject
               </button>
@@ -510,68 +557,76 @@ function DocumentSearchSection({
     <div className="view-tab flex flex-1 flex-col overflow-hidden bg-background fade-in">
       <div className={cn("flex flex-1 flex-col overflow-hidden p-6", detailOpen && "hidden")}>
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-foreground">Document search</h3>
+          <h3 className="text-lg font-semibold text-foreground">Document search</h3>
         </div>
-        <div className="custom-scroll refer-table-wrap flex-1 overflow-y-auto">
-          <table className="refer-table">
-            <thead className="refer-thead sticky top-0 z-10">
-              <tr>
-                <th className="px-6 py-4">Applicant</th>
-                <th className="px-6 py-4">Status / timeline</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-6 py-4 font-bold text-foreground">Carlos Almeida</td>
-                <td className="px-6 py-4">
-                  <span className="rounded border border-warning/30 bg-warning/10 px-2.5 py-1 text-xs font-bold text-warning">
-                    National archive research
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button type="button" onClick={() => setDetail("busca", true)} className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
-                    Open vault
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Card className="card-shadow flex min-h-0 flex-1 flex-col border-0 overflow-hidden">
+          <CardContent className="custom-scroll flex min-h-0 flex-1 flex-col overflow-auto p-6">
+            <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+              <Table>
+                <TableHeader className="refer-table-header sticky top-0 z-10 bg-card">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Applicant</TableHead>
+                    <TableHead>Status / timeline</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium text-foreground">Carlos Almeida</TableCell>
+                    <TableCell>
+                      <Badge variant="warning">National archive research</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button type="button" onClick={() => setDetail("busca", true)} className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
+                        Open vault
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className={cn("flex flex-1 flex-col overflow-hidden bg-background fade-in md:flex-row", !detailOpen && "hidden")}>
-        <div className="custom-scroll w-full shrink-0 overflow-y-auto border-r bg-warning/10 p-6 md:w-1/3">
+      <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
+        <aside className="custom-scroll w-full shrink-0 overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <button
             type="button"
             onClick={() => setDetail("busca", false)}
-            className="mb-6 w-max rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-bold text-muted-foreground"
+            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             ← Back
           </button>
-          <h3 className="text-xl font-bold">Carlos Almeida</h3>
-          <div className="mt-8">
-            <label className="mb-3 block text-xs font-bold uppercase text-muted-foreground">Timeline</label>
-            <select className="w-full rounded-lg border p-3 text-sm font-bold">
-              <option>National archive research</option>
-              <option>Report issuance</option>
-            </select>
-            <button type="button" className="mt-4 w-full rounded-lg bg-warning py-3 text-sm font-bold text-warning-foreground shadow-sm">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Applicant</p>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Carlos Almeida</h3>
+          <div className="mt-8 space-y-4">
+            <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">Timeline</label>
+            <Select defaultValue="research">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose stage" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="research">National archive research</SelectItem>
+                <SelectItem value="report">Report issuance</SelectItem>
+              </SelectContent>
+            </Select>
+            <button type="button" className="w-full rounded-lg border border-warning/50 bg-background py-2.5 text-sm font-semibold text-warning shadow-sm transition hover:bg-warning/5">
               Update client
             </button>
           </div>
-        </div>
-        <div className="custom-scroll flex w-full flex-col p-6 md:w-2/3">
-          <h3 className="mb-4 border-b pb-4 text-lg font-bold">Search vault</h3>
-          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/35 bg-primary/5 p-5 text-center">
-            <span className="text-sm font-bold text-primary">Share document with client</span>
-            <p className="mb-3 mt-1 text-xs text-primary/90">The file uploaded here will appear in the client portal.</p>
-            <button type="button" className="refer-btn-primary px-4 py-2.5 text-xs transition">
+        </aside>
+        <div className="custom-scroll flex min-w-0 flex-1 flex-col bg-background p-6 md:p-8">
+          <h3 className="mb-6 text-base font-semibold text-foreground">Search vault</h3>
+          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-primary/25 bg-muted/20 p-6 text-center">
+            <span className="text-sm font-semibold text-foreground">Share document with client</span>
+            <p className="mb-4 mt-1 max-w-sm text-xs text-muted-foreground">Uploaded files appear in the client portal vault.</p>
+            <button type="button" className="refer-btn-primary px-4 py-2 text-xs transition">
               Attach and send
             </button>
           </div>
-          <div className="flex items-center justify-between rounded-xl border border-border bg-card p-4">
-            <span className="text-sm font-bold">Passaporte_Antigo.jpg</span>
-            <button type="button" className="rounded border bg-muted/50 px-2 py-1 text-xs font-bold text-primary">
+          <div className="card-shadow flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
+            <span className="min-w-0 truncate text-sm font-medium text-foreground">Passaporte_Antigo.jpg</span>
+            <button type="button" className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-primary shadow-sm transition hover:bg-muted">
               View
             </button>
           </div>
@@ -594,60 +649,71 @@ function TranslationSection({
   return (
     <div className="view-tab flex flex-1 flex-col overflow-hidden bg-background fade-in">
       <div className={cn("flex flex-1 flex-col overflow-hidden p-6", detailOpen && "hidden")}>
-        <h3 className="mb-6 text-lg font-bold">Quotes and translations</h3>
-        <div className="custom-scroll refer-table-wrap flex-1 overflow-y-auto">
-          <table className="refer-table">
-            <thead className="refer-thead sticky top-0 z-10">
-              <tr>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Internal status</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-primary/10">
-                <td className="px-6 py-4 font-bold text-foreground">Roberto Pereira</td>
-                <td className="px-6 py-4">
-                  <span className="rounded border border-primary/25 bg-primary/10 px-2 py-1 text-xs font-bold text-primary">
-                    Awaiting quote
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button type="button" onClick={() => setDetail("traducao", true)} className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
-                    Open request
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <h3 className="mb-6 text-lg font-semibold text-foreground">Quotes and translations</h3>
+        <Card className="card-shadow flex min-h-0 flex-1 flex-col border-0 overflow-hidden">
+          <CardContent className="custom-scroll flex min-h-0 flex-1 flex-col overflow-auto p-6">
+            <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+              <Table>
+                <TableHeader className="refer-table-header sticky top-0 z-10 bg-card">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Client</TableHead>
+                    <TableHead>Internal status</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="transition-colors hover:bg-muted/50">
+                    <TableCell className="font-medium text-foreground">Roberto Pereira</TableCell>
+                    <TableCell>
+                      <Badge variant="default">Awaiting quote</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button type="button" onClick={() => setDetail("traducao", true)} className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
+                        Open request
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className={cn("flex flex-1 flex-col overflow-hidden bg-background fade-in md:flex-row", !detailOpen && "hidden")}>
-        <div className="custom-scroll w-full shrink-0 border-r bg-muted/40 p-6 md:w-1/3">
-          <button type="button" onClick={() => setDetail("traducao", false)} className="mb-6 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-bold">
+      <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
+        <aside className="custom-scroll w-full shrink-0 border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
+          <button
+            type="button"
+            onClick={() => setDetail("traducao", false)}
+            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
             ← Back
           </button>
-          <h3 className="text-xl font-bold">Roberto Pereira</h3>
-          <div className="mt-8 space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm">
-            <h4 className="border-b pb-2 text-sm font-bold">Generate quote</h4>
-            <input type="text" placeholder="Amount (BRL)" className="w-full rounded-lg border p-3 text-sm" />
-            <button type="button" className="refer-btn-primary w-full py-3 text-sm">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Client</p>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Roberto Pereira</h3>
+          <div className="mt-8 space-y-4 rounded-xl border border-border bg-background p-4 shadow-sm">
+            <h4 className="border-b border-border pb-2 text-sm font-semibold text-foreground">Generate quote</h4>
+            <input
+              type="text"
+              placeholder="Amount (BRL)"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm shadow-sm"
+            />
+            <button type="button" className="refer-btn-primary w-full py-2.5 text-sm">
               Send quote
             </button>
           </div>
-        </div>
-        <div className="overflow-y-auto p-6 md:w-2/3">
-          <h3 className="mb-4 border-b pb-4 font-bold">Translation files</h3>
-          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/35 bg-primary/5 p-5 text-center">
-            <span className="text-sm font-bold text-primary">Share document with client</span>
-            <p className="mb-3 mt-1 text-xs text-primary/90">The file uploaded here will appear in the client portal.</p>
-            <button type="button" className="refer-btn-primary px-4 py-2.5 text-xs transition">
+        </aside>
+        <div className="min-w-0 flex-1 overflow-y-auto bg-background p-6 md:p-8">
+          <h3 className="mb-6 text-base font-semibold text-foreground">Translation files</h3>
+          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-primary/25 bg-muted/20 p-6 text-center">
+            <span className="text-sm font-semibold text-foreground">Share document with client</span>
+            <p className="mb-4 mt-1 max-w-sm text-xs text-muted-foreground">Uploaded files appear in the client portal vault.</p>
+            <button type="button" className="refer-btn-primary px-4 py-2 text-xs transition">
               Attach and send
             </button>
           </div>
-          <div className="flex items-center justify-between rounded-xl border bg-muted/50 p-4">
-            <span className="text-sm font-bold">Historico_Escolar.pdf</span>
-            <button type="button" className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold text-primary">
+          <div className="card-shadow flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
+            <span className="min-w-0 truncate text-sm font-medium text-foreground">Historico_Escolar.pdf</span>
+            <button type="button" className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-primary shadow-sm transition hover:bg-muted">
               Download PDF
             </button>
           </div>
@@ -671,67 +737,75 @@ function TranscriptionSection({
     <div className="view-tab flex flex-1 flex-col overflow-hidden bg-background fade-in">
       <div className={cn("flex flex-1 flex-col overflow-hidden p-6", detailOpen && "hidden")}>
         <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-foreground">Civil status transcriptions (USC)</h3>
+          <h3 className="text-lg font-semibold text-foreground">Civil status transcriptions (USC)</h3>
         </div>
-        <div className="custom-scroll refer-table-wrap flex-1 overflow-y-auto border-border">
-          <table className="refer-table min-w-[700px]">
-            <thead className="refer-thead sticky top-0 z-10">
-              <tr>
-                <th className="px-6 py-4">Client</th>
-                <th className="px-6 py-4">Status / timeline</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr className="transition hover:bg-muted/50">
-                <td className="px-6 py-4 font-bold text-foreground">Amanda Silva</td>
-                <td className="px-6 py-4">
-                  <span className="rounded border border-success/30 bg-success/10 px-2.5 py-1 text-xs font-bold text-success">
-                    Awaiting physical originals
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <button type="button" onClick={() => setDetail("transcricao", true)} className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
-                    Open vault
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <Card className="card-shadow flex min-h-0 flex-1 flex-col border-0 overflow-hidden">
+          <CardContent className="custom-scroll flex min-h-0 flex-1 flex-col overflow-auto p-6">
+            <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
+              <Table>
+                <TableHeader className="refer-table-header sticky top-0 z-10 bg-card">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>Client</TableHead>
+                    <TableHead>Status / timeline</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow className="transition hover:bg-muted/50">
+                    <TableCell className="font-medium text-foreground">Amanda Silva</TableCell>
+                    <TableCell>
+                      <Badge variant="success">Awaiting physical originals</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <button type="button" onClick={() => setDetail("transcricao", true)} className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
+                        Open vault
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <div className={cn("flex flex-1 flex-col overflow-hidden bg-background fade-in md:flex-row", !detailOpen && "hidden")}>
-        <div className="custom-scroll w-full shrink-0 overflow-y-auto border-r bg-success/10 p-6 md:w-1/3">
+      <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
+        <aside className="custom-scroll w-full shrink-0 overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <button
             type="button"
             onClick={() => setDetail("transcricao", false)}
-            className="mb-6 rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-bold text-muted-foreground shadow-sm transition hover:text-foreground"
+            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
           >
             ← Back
           </button>
-          <h3 className="text-xl font-bold text-foreground">Amanda Silva</h3>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Client</p>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Amanda Silva</h3>
           <div className="mt-8 space-y-4">
-            <select className="w-full rounded-lg border p-3 text-sm font-bold">
-              <option>Awaiting physical shipment</option>
-              <option>Filed in Poland</option>
-            </select>
-            <button type="button" className="w-full rounded-lg bg-success py-3 text-sm font-bold text-success-foreground shadow-sm">
+            <Select defaultValue="shipment">
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose status" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                <SelectItem value="shipment">Awaiting physical shipment</SelectItem>
+                <SelectItem value="filed">Filed in Poland</SelectItem>
+              </SelectContent>
+            </Select>
+            <button type="button" className="w-full rounded-lg bg-success py-2.5 text-sm font-semibold text-success-foreground shadow-sm transition hover:opacity-95">
               Update client
             </button>
           </div>
-        </div>
-        <div className="overflow-y-auto bg-background p-6 md:w-2/3">
-          <h3 className="mb-4 border-b pb-4 text-lg font-bold">Transcription vault</h3>
-          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/35 bg-primary/5 p-5 text-center">
-            <span className="text-sm font-bold text-primary">Share document with client</span>
-            <p className="mb-3 mt-1 text-xs text-primary/90">The file uploaded here will appear in the client portal.</p>
-            <button type="button" className="refer-btn-primary px-4 py-2.5 text-xs transition">
+        </aside>
+        <div className="min-w-0 flex-1 overflow-y-auto bg-background p-6 md:p-8">
+          <h3 className="mb-6 text-base font-semibold text-foreground">Transcription vault</h3>
+          <div className="mb-6 flex flex-col items-center justify-center rounded-xl border border-dashed border-primary/25 bg-muted/20 p-6 text-center">
+            <span className="text-sm font-semibold text-foreground">Share document with client</span>
+            <p className="mb-4 mt-1 max-w-sm text-xs text-muted-foreground">Uploaded files appear in the client portal vault.</p>
+            <button type="button" className="refer-btn-primary px-4 py-2 text-xs transition">
               Attach and send
             </button>
           </div>
-          <div className="flex items-center justify-between rounded-xl border border-border bg-card p-4">
-            <span className="text-sm font-bold">Cert_Casamento.pdf (digital)</span>
-            <button type="button" className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold">
+          <div className="card-shadow flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
+            <span className="min-w-0 truncate text-sm font-medium text-foreground">Cert_Casamento.pdf (digital)</span>
+            <button type="button" className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold shadow-sm transition hover:bg-muted">
               Download
             </button>
           </div>
@@ -768,9 +842,6 @@ function FinanceSection({
     </button>
   );
 
-  const categoryClass = (code: string) =>
-    financeCategoryBadge[code] ?? "border-transparent bg-secondary text-secondary-foreground";
-
   return (
     <div className="view-tab flex flex-1 flex-col overflow-hidden bg-muted/50 fade-in">
       <div className="shrink-0 border-b border-border bg-card px-4 py-3 sm:px-6">
@@ -790,7 +861,7 @@ function FinanceSection({
               <CardContent className="p-4 sm:p-5">
                 <p className="text-xs font-bold uppercase tracking-wide text-warning">Grace · pending_payment</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Days 1–29 overdue: portal stays open; yellow banner + automated email/WhatsApp with payment link.
+                  Days 1 to 29 overdue: portal stays open; yellow banner + automated email/WhatsApp with payment link.
                 </p>
               </CardContent>
             </Card>
@@ -832,15 +903,15 @@ function FinanceSection({
 
           <Card className="card-shadow border-0">
             <CardHeader>
-              <CardTitle className="text-base">Recent payments</CardTitle>
+              <CardTitle className="text-base font-semibold">Recent payments</CardTitle>
               <CardDescription>
-                Stripe webhooks → ledger; Conta Azul POST for accounting (no native P&amp;L in-app — demo labels).
+                Stripe webhooks → ledger; Conta Azul POST for accounting (no native P&amp;L in-app; demo labels).
               </CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
               <Table>
-                <TableHeader>
-                  <TableRow>
+                <TableHeader className="refer-table-header">
+                  <TableRow className="hover:bg-transparent">
                     <TableHead>Client</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead className="text-right">Amount paid</TableHead>
@@ -852,7 +923,9 @@ function FinanceSection({
                       <p className="font-medium text-foreground">Silvana Gomes</p>
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn("shrink-0", categoryClass("CITIZENSHIP"))}>CITIZENSHIP</Badge>
+                      <Badge variant={categoryVariant("CITIZENSHIP")} className="shrink-0 uppercase">
+                        CITIZENSHIP
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-right font-semibold tabular-nums text-success">+ R$ 1,250.00</TableCell>
                   </TableRow>
@@ -861,7 +934,9 @@ function FinanceSection({
                       <p className="font-medium text-foreground">Amanda Silva</p>
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn("shrink-0", categoryClass("TRANSCR."))}>TRANSCR.</Badge>
+                      <Badge variant={categoryVariant("TRANSCR.")} className="shrink-0">
+                        TRANSCR.
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-right font-semibold tabular-nums text-success">+ R$ 2,400.00</TableCell>
                   </TableRow>
@@ -875,13 +950,13 @@ function FinanceSection({
           <FinanceSummaryStrip accent="primary" label="Citizenship total" value="R$ 38,000.00" />
           <Card className="card-shadow border-0">
             <CardHeader>
-              <CardTitle className="text-base">Installments</CardTitle>
+              <CardTitle className="text-base font-semibold">Installments</CardTitle>
               <CardDescription>Citizenship revenue by client (demo).</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
               <Table>
-                <TableHeader>
-                  <TableRow>
+                <TableHeader className="refer-table-header">
+                  <TableRow className="hover:bg-transparent">
                     <TableHead>Client</TableHead>
                     <TableHead>Installment</TableHead>
                     <TableHead className="text-right">Amount paid</TableHead>
@@ -905,13 +980,13 @@ function FinanceSection({
           <FinanceSummaryStrip accent="warning" label="Search total" value="R$ 3,000.00" />
           <Card className="card-shadow border-0">
             <CardHeader>
-              <CardTitle className="text-base">Document search</CardTitle>
+              <CardTitle className="text-base font-semibold">Document search</CardTitle>
               <CardDescription>Payments recorded for archive research (demo).</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
               <Table>
-                <TableHeader>
-                  <TableRow>
+                <TableHeader className="refer-table-header">
+                  <TableRow className="hover:bg-transparent">
                     <TableHead>Client</TableHead>
                     <TableHead className="text-right">Amount paid</TableHead>
                   </TableRow>
@@ -933,13 +1008,13 @@ function FinanceSection({
           <FinanceSummaryStrip accent="info" label="Translations total" value="R$ 1,500.00" />
           <Card className="card-shadow border-0">
             <CardHeader>
-              <CardTitle className="text-base">Translation services</CardTitle>
+              <CardTitle className="text-base font-semibold">Translation services</CardTitle>
               <CardDescription>Invoice-style view (demo).</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
               <Table>
-                <TableHeader>
-                  <TableRow>
+                <TableHeader className="refer-table-header">
+                  <TableRow className="hover:bg-transparent">
                     <TableHead>Client</TableHead>
                     <TableHead className="text-right">Amount paid</TableHead>
                   </TableRow>
@@ -961,13 +1036,13 @@ function FinanceSection({
           <FinanceSummaryStrip accent="success" label="Transcriptions total" value="R$ 2,400.00" />
           <Card className="card-shadow border-0">
             <CardHeader>
-              <CardTitle className="text-base">USC transcription</CardTitle>
+              <CardTitle className="text-base font-semibold">USC transcription</CardTitle>
               <CardDescription>Civil status filings (demo).</CardDescription>
             </CardHeader>
             <CardContent className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0 sm:overflow-visible">
               <Table>
-                <TableHeader>
-                  <TableRow>
+                <TableHeader className="refer-table-header">
+                  <TableRow className="hover:bg-transparent">
                     <TableHead>Client</TableHead>
                     <TableHead className="text-right">Amount paid</TableHead>
                   </TableRow>

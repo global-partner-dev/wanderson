@@ -17,12 +17,13 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { href: "#platform", label: "Platform" },
   { href: "#acquisition", label: "Acquisition" },
   { href: "#features", label: "Features" },
-  { href: "#cta", label: "Get started" },
+  { href: "#contact", label: "Contact" },
 ];
 
 const heroSerif = Cormorant_Garamond({
@@ -49,11 +50,10 @@ export default function HomePage() {
   ];
 
   return (
-    <div className={`min-h-screen bg-background text-foreground antialiased ${heroSerif.variable}`}>
-      {/* Navbar — floating pill, matches refer landing */}
-      <nav className="fixed inset-x-0 top-2 z-50 flex justify-center px-2.5 sm:px-3 sm:top-3">
+    <div className={`min-h-screen bg-background font-sans text-foreground antialiased ${heroSerif.variable}`}>
+      <nav className="fixed inset-x-0 top-2 z-50 flex justify-center px-2.5 sm:top-3 sm:px-3">
         <div
-          className={`flex h-11 w-full max-w-6xl items-center justify-between rounded-2xl px-2.5 shadow-lg backdrop-blur-xl transition-all duration-300 sm:h-12 md:rounded-full md:px-5 ${
+          className={`flex h-11 w-full max-w-6xl items-center justify-between rounded-2xl px-2.5 shadow-lg backdrop-blur-xl transition-all duration-300 sm:h-12 sm:px-4 md:rounded-full md:px-5 ${
             scrolled
               ? "border border-border bg-background/90"
               : "border border-primary-foreground/20 bg-primary-foreground/15"
@@ -86,28 +86,28 @@ export default function HomePage() {
           </div>
 
           <div className="hidden items-center gap-2 sm:flex">
-            <Link
-              href="/login"
-              className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+            <Button
+              asChild
+              variant="ghost"
+              className={`rounded-full px-3 py-1.5 text-sm font-medium ${
                 scrolled
                   ? "text-muted-foreground hover:bg-accent hover:text-foreground"
                   : "text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
               }`}
             >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              className="gradient-primary rounded-full border-0 px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm"
-            >
-              Sign up
-            </Link>
+              <Link href="/login">Log in</Link>
+            </Button>
+            <Button asChild className="gradient-primary rounded-full border-0 px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95">
+              <Link href="/signup">Sign up</Link>
+            </Button>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors md:hidden ${
+            className={`h-9 w-9 rounded-full md:hidden ${
               scrolled
                 ? "text-foreground hover:bg-accent"
                 : "text-primary-foreground hover:bg-primary-foreground/10"
@@ -115,7 +115,7 @@ export default function HomePage() {
             onClick={() => setMobileOpen((v) => !v)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          </Button>
         </div>
       </nav>
 
@@ -134,27 +134,22 @@ export default function HomePage() {
                 </a>
               ))}
               <div className="mt-2 grid grid-cols-2 gap-2 border-t border-border pt-3">
-                <Link
-                  href="/login"
-                  className="rounded-lg border border-border bg-card py-2.5 text-center text-sm font-semibold"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/signup"
-                  className="gradient-primary rounded-lg py-2.5 text-center text-sm font-semibold text-primary-foreground"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Sign up
-                </Link>
+                <Button asChild variant="outline" className="w-full rounded-lg">
+                  <Link href="/login" onClick={() => setMobileOpen(false)}>
+                    Log in
+                  </Link>
+                </Button>
+                <Button asChild className="gradient-primary w-full rounded-lg border-0 text-primary-foreground hover:opacity-95">
+                  <Link href="/signup" onClick={() => setMobileOpen(false)}>
+                    Sign up
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Hero — centered, serif headline + gold accents, brighter photo */}
       <section className="relative overflow-hidden">
         <div className="relative flex min-h-[100svh] items-center justify-center pb-16 pt-28 sm:pb-20 sm:pt-32">
           <div className="absolute inset-0 z-0">
@@ -182,7 +177,7 @@ export default function HomePage() {
               className={`${heroSerif.className} mx-auto mb-6 max-w-4xl text-pretty text-[2.65rem] font-semibold leading-[1.08] tracking-[-0.02em] text-white sm:text-6xl sm:leading-[1.06] md:text-7xl md:leading-[1.05]`}
             >
               <span className="block">
-              Your Path to <span className="text-amber-200">European</span>
+                Your Path to <span className="text-amber-200">European</span>
               </span>
               <span className="mt-1 block font-semibold sm:mt-1.5">Citizenship</span>
               <span className="mt-4 block font-sans text-2xl font-semibold leading-snug tracking-tight sm:mt-5 sm:text-3xl md:text-[2rem]">
@@ -192,40 +187,41 @@ export default function HomePage() {
               </span>
             </h1>
             <p className="mx-auto mb-10 max-w-2xl text-base leading-relaxed text-slate-200/95 sm:text-lg sm:leading-relaxed">
-              European citizenship workflows for teams: headless architecture, Supabase RLS, Stripe Billing, e-sign, CRM,
-              and a client portal — GDPR / LGPD aligned.
+              European citizenship workflows for teams: decoupled architecture, Supabase RLS, Stripe Billing, electronic
+              signatures, CRM, and a client portal. GDPR and LGPD aligned.
             </p>
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap sm:gap-3">
-              <Link
-                href="/signup"
-                className="gradient-primary inline-flex h-12 min-w-[10rem] items-center justify-center gap-2 rounded-full border-0 px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-indigo-500/35 transition hover:opacity-95"
+              <Button
+                asChild
+                size="lg"
+                className="gradient-primary h-12 min-w-[10rem] rounded-full border-0 px-8 text-base font-semibold text-primary-foreground shadow-lg shadow-indigo-500/35 hover:opacity-95"
               >
-                Get started
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/triage"
-                className="inline-flex h-12 min-w-[10rem] items-center justify-center rounded-full border border-white/30 bg-black/30 px-8 text-base font-semibold text-white backdrop-blur-md transition hover:bg-black/45"
+                <Link href="/signup">
+                  Get started
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="h-12 min-w-[10rem] rounded-full border-white/30 bg-black/30 px-8 text-base font-semibold text-white backdrop-blur-md hover:bg-black/45 hover:text-white"
               >
-                Try triage wizard
-              </Link>
-              <Link
-                href="/login"
-                className="inline-flex h-12 items-center justify-center px-5 text-base font-semibold text-white/95 underline-offset-4 transition hover:text-white hover:underline"
-              >
-                Log in
-              </Link>
+                <Link href="/triage">Try triage wizard</Link>
+              </Button>
+              <Button asChild variant="link" size="lg" className="h-12 px-5 text-base font-semibold text-white/95 hover:text-white hover:underline">
+                <Link href="/login">Log in</Link>
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Platform architecture — links to demo routes */}
       <section id="platform" className="border-b border-border bg-background py-10 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 text-center sm:mb-10">
             <span className="mb-2 inline-flex rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Headless stack
+              Platform stack
             </span>
             <h2 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">Public SEO, private CSR</h2>
             <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
@@ -236,7 +232,7 @@ export default function HomePage() {
           <div className="grid gap-4 sm:grid-cols-3">
             {[
               { href: "/triage", title: "Triage wizard", desc: "Anonymous steps; PII only at the end; no partial storage." },
-              { href: "/portal", title: "Client portal", desc: "Timeline, vault, billing states — demo shell." },
+              { href: "/portal", title: "Client portal", desc: "Timeline, vault, billing states (demo shell)." },
               { href: "/proposal/demo-uuid-0001", title: "Secure proposal", desc: "Expiry countdown, satellite signers, BRL checkout." },
             ].map((item) => (
               <Link
@@ -260,7 +256,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
-              <h3 className="text-lg font-bold text-foreground sm:text-xl">A) Direct e-commerce</h3>
+              <h3 className="text-lg font-bold text-foreground sm:text-xl">A) Direct online sales</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 Product landing → Stripe Checkout → user creation → client portal. Standalone SKUs (translation,
                 research) skip the triage wizard.
@@ -280,15 +276,17 @@ export default function HomePage() {
               <h3 className="text-lg font-bold text-foreground sm:text-xl">B) Triage wizard</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 JSON-driven eligibility engine. No CPF/RG during anonymous steps; CRM receives only completed, qualified
-                leads. Retention: exit-intent + Meta/WhatsApp bots feeding the same pipeline.
+                leads. Retention: exit intent and Meta/WhatsApp bots feeding the same pipeline.
               </p>
-              <Link
-                href="/triage"
-                className="gradient-primary mt-6 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm"
+              <Button
+                asChild
+                className="gradient-primary mt-6 inline-flex gap-2 rounded-full border-0 px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95"
               >
-                Launch wizard demo
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+                <Link href="/triage">
+                  Launch wizard demo
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -325,15 +323,15 @@ export default function HomePage() {
             </span>
             <h2 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl lg:text-4xl">Everything your firm needs</h2>
             <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
-              CRM with Kanban and table views, family &quot;satellite&quot; contracts, finance with grace and hard-lock
-              billing states — aligned with how citizenship teams actually work.
+              CRM with Kanban and table views, family &quot;satellite&quot; contracts, finance with grace and hard lock
+              billing states, aligned with how citizenship teams actually work.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
             {[
               {
                 title: "Sales & CRM",
-                desc: "Kanban + table, secure proposal links, e-sign and Stripe handoff.",
+                desc: "Kanban + table, secure proposal links, electronic signatures and Stripe handoff.",
                 icon: TrendingUp,
               },
               {
@@ -377,18 +375,21 @@ export default function HomePage() {
                 Frontend-only demo: CRM Kanban, finance labels, triage wizard, client portal, and proposal link flows.
               </p>
               <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center justify-center rounded-full bg-primary-foreground px-8 py-3 text-sm font-semibold text-primary shadow-sm hover:bg-primary-foreground/90 sm:text-base"
+                <Button
+                  asChild
+                  size="lg"
+                  className="rounded-full bg-primary-foreground px-8 text-primary shadow-sm hover:bg-primary-foreground/90 sm:text-base"
                 >
-                  Open admin (demo)
-                </Link>
-                <Link
-                  href="/portal"
-                  className="inline-flex items-center justify-center rounded-full border border-primary-foreground/30 bg-transparent px-8 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 sm:text-base"
+                  <Link href="/admin">Open admin (demo)</Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="rounded-full border-primary-foreground/30 bg-transparent px-8 text-primary-foreground hover:bg-primary-foreground/10 sm:text-base"
                 >
-                  Client portal
-                </Link>
+                  <Link href="/portal">Client portal</Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -414,7 +415,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer — refer-style dark sidebar tone */}
+      {/* Footer: refer-style dark sidebar tone */}
       <footer className="bg-sidebar text-sidebar-foreground">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-4 border-t border-sidebar-border pt-8 sm:flex-row">

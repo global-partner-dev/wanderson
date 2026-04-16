@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,9 +13,6 @@ export default function SignupForm() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
   }
-
-  const inputClass =
-    "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
@@ -29,7 +29,7 @@ export default function SignupForm() {
             </span>
           </Link>
           <p className="max-w-md text-base text-primary-foreground/85 lg:text-lg">
-            Create an account to explore the demo — styling matches our marketing site and admin experience.
+            Create an account to explore the demo. Styling matches our marketing site and admin experience.
           </p>
         </div>
       </div>
@@ -48,61 +48,40 @@ export default function SignupForm() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            <div>
-              <label htmlFor="signup-name" className="mb-1.5 block text-sm font-medium text-foreground">
-                Full name
-              </label>
-              <input
-                id="signup-name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                placeholder="Jane Doe"
-                className={`${inputClass} mt-1.5`}
-              />
+            <div className="space-y-2">
+              <Label htmlFor="signup-name">Full name</Label>
+              <Input id="signup-name" name="name" type="text" autoComplete="name" placeholder="Jane Doe" />
             </div>
-            <div>
-              <label htmlFor="signup-email" className="mb-1.5 block text-sm font-medium text-foreground">
-                Email
-              </label>
-              <input
-                id="signup-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-                className={`${inputClass} mt-1.5`}
-              />
+            <div className="space-y-2">
+              <Label htmlFor="signup-email">Email</Label>
+              <Input id="signup-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" />
             </div>
-            <div>
-              <label htmlFor="signup-password" className="mb-1.5 block text-sm font-medium text-foreground">
-                Password
-              </label>
-              <div className="relative mt-1.5">
-                <input
+            <div className="space-y-2">
+              <Label htmlFor="signup-password">Password</Label>
+              <div className="relative">
+                <Input
                   id="signup-password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   placeholder="At least 8 characters"
-                  className={`${inputClass} pr-10`}
+                  className="pr-10"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full w-10 rounded-l-none text-muted-foreground hover:text-foreground"
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted-foreground hover:text-foreground"
                   onClick={() => setShowPassword((v) => !v)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                </Button>
               </div>
             </div>
-            <button
-              type="submit"
-              className="gradient-primary h-11 w-full rounded-lg border-0 text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95"
-            >
+            <Button type="submit" className="gradient-primary h-11 w-full border-0 text-primary-foreground shadow-sm hover:opacity-95">
               Create account
-            </button>
+            </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
