@@ -12,7 +12,11 @@ import { Label } from "@/components/ui/label";
 import { AuthBanner, type AuthBannerTone } from "@/components/ui/auth-banner";
 import { createClient } from "@/lib/supabase/client";
 
-type StatusKey = "staff_pending" | "staff_rejected" | "staff_approved";
+type StatusKey =
+  | "staff_pending"
+  | "staff_rejected"
+  | "staff_approved"
+  | "email_verified";
 type StatusEntry = {
   tone: AuthBannerTone;
   icon: LucideIcon;
@@ -40,6 +44,12 @@ const STATUS_MESSAGES: Record<StatusKey, StatusEntry> = {
     icon: CheckCircle2,
     title: "Your staff access has been approved",
     message: "Sign in below to enter the backoffice.",
+  },
+  email_verified: {
+    tone: "success",
+    icon: CheckCircle2,
+    title: "Email confirmed",
+    message: "Your email has been verified. Sign in with your password to continue.",
   },
 };
 

@@ -49,10 +49,15 @@ export async function signup(formData: FormData) {
 
   const staffSignup = formData.get("staff") === "on";
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      // Confirmation links must hit /auth/callback so we can send users to /login
+      // after verifying; otherwise Supabase uses the project Site URL (often "/").
+      emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent("/login?status=email_verified")}`,
       data: { full_name: fullName, staff_signup: staffSignup },
     },
   });

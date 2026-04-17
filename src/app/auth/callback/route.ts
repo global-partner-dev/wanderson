@@ -71,6 +71,11 @@ export async function GET(request: Request) {
           `${origin}${next ?? "/reset-password"}`,
         );
       }
+      // Email confirmation after sign-up: land on login (not portal/home).
+      if (rawType === "signup") {
+        const dest = next ?? "/login?status=email_verified";
+        return NextResponse.redirect(`${origin}${dest}`);
+      }
       const dest = next ?? (await resolveRedirect(supabase, "/portal"));
       return NextResponse.redirect(`${origin}${dest}`);
     } else {
