@@ -16,6 +16,7 @@ import {
   Shield,
   User,
   UserCheck,
+  Users,
   Video,
   X,
 } from "lucide-react";
@@ -62,7 +63,10 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
 
   const mgmtItems: NavItem[] = [
     ...(role === "admin"
-      ? [{ id: "tab-staff-approvals" as const, title: "Staff requests", icon: UserCheck }]
+      ? [
+          { id: "tab-users" as const, title: "User management", icon: Users },
+          { id: "tab-staff-approvals" as const, title: "Staff requests", icon: UserCheck },
+        ]
       : []),
     { id: "tab-financeiro", title: "Categorized finance", icon: PieChart },
   ];
