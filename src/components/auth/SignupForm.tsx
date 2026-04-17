@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AuthBanner } from "@/components/ui/auth-banner";
 import { signup } from "@/lib/auth-actions";
 
 export default function SignupForm() {
@@ -78,26 +79,11 @@ export default function SignupForm() {
           </p>
 
           {error && (
-            <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
+            <AuthBanner tone="destructive" title="We couldn't create your account" message={error} />
           )}
 
           {success && (
-            <div
-              role="status"
-              className="card-shadow mt-6 flex gap-4 rounded-xl border border-primary/25 bg-primary/10 p-4 ring-1 ring-primary/15 dark:border-primary/35 dark:bg-primary/15 dark:ring-primary/20"
-            >
-              <div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full gradient-primary text-primary-foreground shadow-sm"
-                aria-hidden
-              >
-                <CheckCircle2 className="h-5 w-5" strokeWidth={2} />
-              </div>
-              <p className="min-w-0 pt-0.5 text-sm font-medium leading-relaxed text-foreground">
-                {success}
-              </p>
-            </div>
+            <AuthBanner tone="info" title="Check your inbox" message={success} />
           )}
 
           {!success && (

@@ -7,6 +7,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AuthBanner } from "@/components/ui/auth-banner";
 import { resetPassword } from "@/lib/auth-actions";
 
 export default function ResetPasswordForm() {
@@ -78,9 +79,7 @@ export default function ResetPasswordForm() {
           </p>
 
           {error && (
-            <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
+            <AuthBanner tone="destructive" title="We couldn't update your password" message={error} />
           )}
 
           {success ? (

@@ -1,23 +1,67 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import type { LucideIcon } from "lucide-react";
+import { CheckCircle2, Clock, Eye, EyeOff, Loader2, ShieldX } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AuthBanner, type AuthBannerTone } from "@/components/ui/auth-banner";
 import { createClient } from "@/lib/supabase/client";
+
+type StatusKey = "staff_pending" | "staff_rejected" | "staff_approved";
+type StatusEntry = {
+  tone: AuthBannerTone;
+  icon: LucideIcon;
+  title: string;
+  message: string;
+};
+
+const STATUS_MESSAGES: Record<StatusKey, StatusEntry> = {
+  staff_pending: {
+    tone: "warning",
+    icon: Clock,
+    title: "Awaiting administrator approval",
+    message:
+      "Your staff access request hasn't been approved yet. You'll be able to sign in as soon as an admin reviews your account.",
+  },
+  staff_rejected: {
+    tone: "danger",
+    icon: ShieldX,
+    title: "Staff access request declined",
+    message:
+      "Your staff access request was declined. Please contact an administrator if you believe this is a mistake.",
+  },
+  staff_approved: {
+    tone: "success",
+    icon: CheckCircle2,
+    title: "Your staff access has been approved",
+    message: "Sign in below to enter the backoffice.",
+  },
+};
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusEntry, setStatusEntry] = useState<StatusEntry | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const status = searchParams.get("status") as StatusKey | null;
+    if (status && STATUS_MESSAGES[status]) {
+      setStatusEntry(STATUS_MESSAGES[status]);
+      setError(null);
+    }
+  }, [searchParams]);
 
   function handleSubmit(formData: FormData) {
     setError(null);
+    setStatusEntry(null);
     startTransition(async () => {
       const supabase = createClient();
 
@@ -41,11 +85,36 @@ export default function LoginForm() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role")
+        .select("role, staff_signup_requested, staff_approval_status")
         .eq("id", data.user.id)
         .single();
 
-      const role = (profile as { role?: string } | null)?.role;
+      const profileRow = profile as
+        | {
+            role?: string;
+            staff_signup_requested?: boolean;
+            staff_approval_status?: "none" | "pending" | "approved" | "rejected";
+          }
+        | null;
+
+      const staffNotApproved =
+        profileRow?.staff_signup_requested === true &&
+        profileRow?.staff_approval_status !== "approved";
+
+      if (staffNotApproved) {
+        // Sign them straight back out so they hold no session, then surface
+        // the appropriate message inline.
+        await supabase.auth.signOut();
+        const status = profileRow?.staff_approval_status;
+        const entry =
+          status === "rejected" ? STATUS_MESSAGES.staff_rejected : STATUS_MESSAGES.staff_pending;
+        setStatusEntry(entry);
+        setError(null);
+        router.refresh();
+        return;
+      }
+
+      const role = profileRow?.role;
       const redirectTo = role === "admin" || role === "staff" ? "/admin" : "/portal";
 
       // Refresh server components so middleware/server pages pick up the new
@@ -90,9 +159,16 @@ export default function LoginForm() {
           </p>
 
           {error && (
-            <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
+            <AuthBanner tone="destructive" title="Sign in failed" message={error} />
+          )}
+
+          {statusEntry && !error && (
+            <AuthBanner
+              tone={statusEntry.tone}
+              icon={statusEntry.icon}
+              title={statusEntry.title}
+              message={statusEntry.message}
+            />
           )}
 
           <form action={handleSubmit} className="mt-8 space-y-4">
