@@ -1,0 +1,12 @@
+# Supabase project config used by the CLI.
+# Only the bits the project actually needs live here; the rest fall back to
+# the CLI's built-in defaults.
+
+# ───────────────────────── Edge Functions ─────────────────────────
+#
+# Stripe signs its webhook calls with `stripe-signature` and does NOT carry a
+# Supabase JWT. The gateway must therefore stop trying to authenticate the
+# request itself and let our handler verify the Stripe signature instead.
+
+[functions.stripe-webhook]
+verify_jwt = false

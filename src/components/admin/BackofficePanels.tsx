@@ -1028,7 +1028,7 @@ function FinanceSection({
         </div>
 
         <div className={cn("fin-view fade-in space-y-6", finTab !== "fin-traducao" && "hidden")}>
-          <FinanceSummaryStrip accent="info" label="Translations total" value="R$ 1,500.00" />
+          <FinanceSummaryStrip accent="info" label="Translations total" value="R$ 1,000.00" />
           <Card className="card-shadow border-0">
             <CardHeader>
               <CardTitle className="text-base font-semibold">Translation services</CardTitle>
@@ -1047,7 +1047,7 @@ function FinanceSection({
                     <TableCell>
                       <p className="font-medium text-foreground">Roberto Pereira</p>
                     </TableCell>
-                    <TableCell className="text-right font-semibold tabular-nums text-success">+ R$ 850.00</TableCell>
+                    <TableCell className="text-right font-semibold tabular-nums text-success">+ R$ 1,000.00</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

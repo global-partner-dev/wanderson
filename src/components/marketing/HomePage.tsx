@@ -315,6 +315,15 @@ export default function HomePage() {
                   Webhooks for reconciliation and ERP (e.g. Conta Azul)
                 </li>
               </ul>
+              <Button
+                asChild
+                className="gradient-primary mt-6 inline-flex gap-2 rounded-full border-0 px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:opacity-95"
+              >
+                <Link href="/services">
+                  Browse services
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
             </div>
             <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
               <h3 className="text-lg font-bold text-foreground sm:text-xl">B) Triage wizard</h3>

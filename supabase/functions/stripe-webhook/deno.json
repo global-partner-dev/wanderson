@@ -1,0 +1,12 @@
+{
+  "tasks": {
+    "start": "supabase functions serve stripe-webhook --no-verify-jwt"
+  },
+  "imports": {
+    "stripe": "https://esm.sh/stripe@18?target=deno",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2?target=deno"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.ns"]
+  }
+}
