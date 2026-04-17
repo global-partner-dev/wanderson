@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   ArrowDownToLine,
+  ArrowLeft,
   ArrowUpFromLine,
   Bell,
   CalendarDays,
@@ -785,9 +786,10 @@ export default function ClientPortal() {
           <footer className="border-t border-border px-4 py-5 text-center text-xs text-muted-foreground sm:px-6">
             <Link
               href="/"
-              className="font-medium text-foreground/70 transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-1 font-medium text-foreground/70 transition-colors hover:text-foreground"
             >
-              ← Marketing site
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+              Marketing site
             </Link>
             <span className="mx-3 text-border">|</span>
             <span>Demo only — authenticated CSR shell in production</span>

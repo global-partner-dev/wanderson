@@ -2,6 +2,7 @@
 
 import type { LucideIcon } from "lucide-react";
 import {
+  ArrowLeft,
   DollarSign,
   FileStack,
   Handshake,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge, ScheduleDateBadge, type BadgeVariant } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
@@ -165,13 +167,15 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <button
+                        <Button
                           type="button"
+                          variant="outline"
+                          size="sm"
                           onClick={() => setDetail("analise", true)}
-                          className="rounded border border-border bg-card px-3 py-1.5 text-xs font-bold"
+                          className="h-8 px-3 text-xs font-bold uppercase tracking-wide shadow-sm hover:border-primary/40 hover:text-primary"
                         >
                           Review
-                        </button>
+                        </Button>
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -182,40 +186,53 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
         </div>
         <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen.analise && "hidden")} id="analise-detalhe">
           <aside className="custom-scroll flex w-full flex-col overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={() => setDetail("analise", false)}
-              className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+              className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
             >
-              ← Back
-            </button>
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              Back
+            </Button>
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Lead</p>
             <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Roberto Carlos</h3>
             <div className="mt-8 space-y-2.5">
-              <button type="button" className="w-full rounded-lg bg-success py-2.5 text-sm font-semibold text-success-foreground shadow-sm transition hover:opacity-95">
-                Viable · schedule call
-              </button>
-              <button
+              <Button
                 type="button"
-                className="w-full rounded-lg border border-warning/50 bg-background py-2.5 text-sm font-semibold text-warning shadow-sm transition hover:bg-warning/5"
+                className="h-11 w-full gradient-success border-0 text-sm font-semibold text-success-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 hover:shadow-lg active:translate-y-0"
+              >
+                Viable · schedule call
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 w-full border-warning/60 bg-warning/5 text-sm font-semibold text-warning shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-warning hover:bg-warning/10 hover:text-warning hover:shadow-md active:translate-y-0"
               >
                 Sell search
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
-                className="w-full rounded-lg border border-destructive/40 bg-background py-2.5 text-sm font-semibold text-destructive transition hover:bg-destructive/5"
+                variant="outline"
+                className="h-11 w-full border-destructive/50 bg-destructive/5 text-sm font-semibold text-destructive shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-destructive hover:bg-destructive/10 hover:text-destructive hover:shadow-md active:translate-y-0"
               >
                 Not viable
-              </button>
+              </Button>
             </div>
           </aside>
           <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-background p-6 md:p-8">
             <h3 className="mb-6 text-base font-semibold text-foreground">Documents submitted</h3>
             <div className="card-shadow flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
               <span className="min-w-0 truncate text-sm font-medium text-foreground">Passaporte_Velho.jpg</span>
-              <button type="button" className="shrink-0 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-primary shadow-sm transition hover:bg-muted">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-8 shrink-0 px-3 text-xs font-semibold text-primary shadow-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+              >
                 View image
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -483,13 +500,16 @@ function CitizenshipSection({
       </div>
       <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
         <aside className="custom-scroll flex h-full w-full shrink-0 flex-col overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => setDetail("cidadania", false)}
-            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
           >
-            ← Back
-          </button>
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back
+          </Button>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Case</p>
           <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Silvana Gomes</h3>
           <div className="mt-8 space-y-4">
@@ -600,13 +620,16 @@ function DocumentSearchSection({
       </div>
       <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
         <aside className="custom-scroll w-full shrink-0 overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => setDetail("busca", false)}
-            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
           >
-            ← Back
-          </button>
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back
+          </Button>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Applicant</p>
           <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Carlos Almeida</h3>
           <div className="mt-8 space-y-4">
@@ -691,13 +714,16 @@ function TranslationSection({
       </div>
       <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
         <aside className="custom-scroll w-full shrink-0 border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => setDetail("traducao", false)}
-            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
           >
-            ← Back
-          </button>
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back
+          </Button>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Client</p>
           <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Roberto Pereira</h3>
           <div className="mt-8 space-y-4 rounded-xl border border-border bg-background p-4 shadow-sm">
@@ -780,13 +806,16 @@ function TranscriptionSection({
       </div>
       <div className={cn("flex flex-1 flex-col overflow-hidden bg-muted/20 fade-in md:flex-row", !detailOpen && "hidden")}>
         <aside className="custom-scroll w-full shrink-0 overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => setDetail("transcricao", false)}
-            className="mb-6 inline-flex w-max items-center gap-1 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
           >
-            ← Back
-          </button>
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back
+          </Button>
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Client</p>
           <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Amanda Silva</h3>
           <div className="mt-8 space-y-4">
