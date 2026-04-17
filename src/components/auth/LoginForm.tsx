@@ -58,20 +58,32 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [statusEntry, setStatusEntry] = useState<StatusEntry | null>(null);
+  /** From ?status=… in the URL (persists across login attempts). */
+  const [urlStatusBanner, setUrlStatusBanner] = useState<StatusEntry | null>(null);
+  /** True when the URL asked to show the post–email-confirm message (kept visible if staff login then fails). */
+  const [emailVerifiedFromUrl, setEmailVerifiedFromUrl] = useState(false);
+  /** Staff pending/rejected (and similar) after a failed login attempt. */
+  const [loginAttemptBanner, setLoginAttemptBanner] = useState<StatusEntry | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const status = searchParams.get("status") as StatusKey | null;
-    if (status && STATUS_MESSAGES[status]) {
-      setStatusEntry(STATUS_MESSAGES[status]);
-      setError(null);
+    setEmailVerifiedFromUrl(status === "email_verified");
+    setError(null);
+    if (
+      status &&
+      status !== "email_verified" &&
+      Object.prototype.hasOwnProperty.call(STATUS_MESSAGES, status)
+    ) {
+      setUrlStatusBanner(STATUS_MESSAGES[status as StatusKey]);
+    } else {
+      setUrlStatusBanner(null);
     }
   }, [searchParams]);
 
   function handleSubmit(formData: FormData) {
     setError(null);
-    setStatusEntry(null);
+    setLoginAttemptBanner(null);
     startTransition(async () => {
       const supabase = createClient();
 
@@ -118,7 +130,7 @@ export default function LoginForm() {
         const status = profileRow?.staff_approval_status;
         const entry =
           status === "rejected" ? STATUS_MESSAGES.staff_rejected : STATUS_MESSAGES.staff_pending;
-        setStatusEntry(entry);
+        setLoginAttemptBanner(entry);
         setError(null);
         router.refresh();
         return;
@@ -172,13 +184,33 @@ export default function LoginForm() {
             <AuthBanner tone="destructive" title="Sign in failed" message={error} />
           )}
 
-          {statusEntry && !error && (
-            <AuthBanner
-              tone={statusEntry.tone}
-              icon={statusEntry.icon}
-              title={statusEntry.title}
-              message={statusEntry.message}
-            />
+          {(emailVerifiedFromUrl || urlStatusBanner || loginAttemptBanner) && (
+            <div className="mt-4 space-y-3">
+              {emailVerifiedFromUrl && (
+                <AuthBanner
+                  tone={STATUS_MESSAGES.email_verified.tone}
+                  icon={STATUS_MESSAGES.email_verified.icon}
+                  title={STATUS_MESSAGES.email_verified.title}
+                  message={STATUS_MESSAGES.email_verified.message}
+                />
+              )}
+              {urlStatusBanner && (
+                <AuthBanner
+                  tone={urlStatusBanner.tone}
+                  icon={urlStatusBanner.icon}
+                  title={urlStatusBanner.title}
+                  message={urlStatusBanner.message}
+                />
+              )}
+              {loginAttemptBanner && (
+                <AuthBanner
+                  tone={loginAttemptBanner.tone}
+                  icon={loginAttemptBanner.icon}
+                  title={loginAttemptBanner.title}
+                  message={loginAttemptBanner.message}
+                />
+              )}
+            </div>
           )}
 
           <form action={handleSubmit} className="mt-8 space-y-4">
