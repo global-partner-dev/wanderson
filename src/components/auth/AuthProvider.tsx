@@ -19,11 +19,18 @@ interface AuthState {
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthState>({
+interface AuthContextValue extends AuthState {
+  signOut: () => Promise<void>;
+  refresh: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextValue>({
   user: null,
   profile: null,
   role: null,
   loading: true,
+  signOut: async () => {},
+  refresh: async () => {},
 });
 
 export function useAuth() {
@@ -52,31 +59,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [supabase],
   );
 
-  useEffect(() => {
-    async function init() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+  const loadUser = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (user) {
-        const profile = await fetchProfile(user.id);
-        setState({
-          user,
-          profile,
-          role: profile?.role ?? "client",
-          loading: false,
-        });
-      } else {
-        setState({ user: null, profile: null, role: null, loading: false });
-      }
+    if (user) {
+      const profile = await fetchProfile(user.id);
+      setState({
+        user,
+        profile,
+        role: profile?.role ?? "client",
+        loading: false,
+      });
+    } else {
+      setState({ user: null, profile: null, role: null, loading: false });
     }
+  }, [supabase, fetchProfile]);
 
-    init();
+  useEffect(() => {
+    loadUser();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
+      if (
+        (event === "SIGNED_IN" ||
+          event === "TOKEN_REFRESHED" ||
+          event === "USER_UPDATED") &&
+        session?.user
+      ) {
         const profile = await fetchProfile(session.user.id);
         setState({
           user: session.user,
@@ -90,7 +102,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase, fetchProfile]);
+  }, [supabase, fetchProfile, loadUser]);
 
-  return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>;
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setState({ user: null, profile: null, role: null, loading: false });
+  }, [supabase]);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({ ...state, signOut, refresh: loadUser }),
+    [state, signOut, loadUser],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

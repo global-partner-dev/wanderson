@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   ArrowDownToLine,
@@ -28,7 +29,6 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { logout } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -117,7 +117,17 @@ function StatCard({
 export default function ClientPortal() {
   const [billing, setBilling]     = useState<BillingMode>("grace");
   const [navActive, setNavActive] = useState<(typeof NAV)[number]["id"]>("overview");
-  const { user, profile }         = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const router = useRouter();
+  const [isLoggingOut, startLogout] = useTransition();
+
+  function handleLogout() {
+    startLogout(async () => {
+      await signOut();
+      router.refresh();
+      router.push("/login");
+    });
+  }
 
   const completedSteps = STEPS.filter((s) => s.done).length;
   const progressPct    = Math.round((completedSteps / STEPS.length) * 100);
@@ -209,9 +219,10 @@ export default function ClientPortal() {
               {/* Logout icon button */}
               <button
                 type="button"
-                onClick={() => logout()}
+                onClick={handleLogout}
+                disabled={isLoggingOut}
                 title="Log out"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sidebar-muted transition-colors hover:bg-sidebar-accent/60 hover:text-destructive"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sidebar-muted transition-colors hover:bg-sidebar-accent/60 hover:text-destructive disabled:cursor-not-allowed disabled:opacity-60"
                 aria-label="Log out"
               >
                 <LogOut className="h-4 w-4" />

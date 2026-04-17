@@ -1,8 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { LogOut, User, Shield, Briefcase } from "lucide-react";
 import { useAuth } from "./AuthProvider";
-import { logout } from "@/lib/auth-actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,12 +21,22 @@ const roleMeta = {
 } as const;
 
 export function UserMenu() {
-  const { user, profile, role } = useAuth();
+  const { user, profile, role, signOut } = useAuth();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   if (!user) return null;
 
   const meta = roleMeta[role ?? "client"];
   const RoleIcon = meta.icon;
+
+  function handleLogout() {
+    startTransition(async () => {
+      await signOut();
+      router.refresh();
+      router.push("/login");
+    });
+  }
 
   return (
     <DropdownMenu>
@@ -49,7 +60,11 @@ export function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="gap-2 text-destructive focus:text-destructive"
-          onClick={() => logout()}
+          disabled={isPending}
+          onSelect={(event) => {
+            event.preventDefault();
+            handleLogout();
+          }}
         >
           <LogOut className="h-4 w-4" />
           <span>Log out</span>

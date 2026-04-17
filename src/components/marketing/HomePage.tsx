@@ -211,7 +211,7 @@ export default function HomePage() {
               <span className="mt-1 block font-semibold sm:mt-1.5">Citizenship</span>
               <span className="mt-4 block font-sans text-2xl font-semibold leading-snug tracking-tight sm:mt-5 sm:text-3xl md:text-[2rem]">
                 <span className="bg-gradient-to-r from-violet-200 via-indigo-100 to-sky-200 bg-clip-text text-transparent">
-                  organized end to end
+                  Organized End to End
                 </span>
               </span>
             </h1>

@@ -20,9 +20,10 @@ import {
   Video,
   X,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { logout } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { TabId } from "./admin-types";
@@ -59,7 +60,17 @@ type Props = {
 };
 
 export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggleMobile }: Props) {
-  const { user, profile, role } = useAuth();
+  const { user, profile, role, signOut } = useAuth();
+  const router = useRouter();
+  const [isLoggingOut, startLogout] = useTransition();
+
+  function handleLogout() {
+    startLogout(async () => {
+      await signOut();
+      router.refresh();
+      router.push("/login");
+    });
+  }
 
   const mgmtItems: NavItem[] = [
     ...(role === "admin"
@@ -171,9 +182,10 @@ export default function AdminSidebar({ activeTab, onSelect, mobileOpen, onToggle
                 {/* Logout icon button */}
                 <button
                   type="button"
-                  onClick={() => logout()}
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
                   title="Log out"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-destructive"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-destructive disabled:cursor-not-allowed disabled:opacity-60"
                   aria-label="Log out"
                 >
                   <LogOut className="h-4 w-4" />

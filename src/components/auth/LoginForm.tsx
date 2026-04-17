@@ -8,7 +8,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/lib/auth-actions";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -19,13 +19,39 @@ export default function LoginForm() {
   function handleSubmit(formData: FormData) {
     setError(null);
     startTransition(async () => {
-      const result = await login(formData);
-      if (result?.error) {
-        setError(result.error);
-      } else if (result?.redirect) {
-        router.refresh();
-        router.push(result.redirect);
+      const supabase = createClient();
+
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message);
+        return;
       }
+
+      if (!data.user) {
+        setError("Unexpected error. Please try again.");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+
+      const role = (profile as { role?: string } | null)?.role;
+      const redirectTo = role === "admin" || role === "staff" ? "/admin" : "/portal";
+
+      // Refresh server components so middleware/server pages pick up the new
+      // session cookies, then navigate to the destination.
+      router.refresh();
+      router.push(redirectTo);
     });
   }
 
