@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import type { StaffApprovalStatus, UserRole } from "@/lib/types";
 
@@ -68,6 +69,106 @@ export async function listUsers(
   }
 
   return { data: (data ?? []) as ManagedUser[] };
+}
+
+/**
+ * Ensures every Supabase Auth user has a profile row and aligns email / display
+ * name from Auth metadata. Does not change roles or staff approval state for
+ * existing profiles.
+ */
+export async function syncProfilesFromAuth(): Promise<{
+  inserted?: number;
+  updated?: number;
+  error?: string;
+}> {
+  const auth = await requireAdmin();
+  if (!auth.ok) {
+    return { error: auth.error };
+  }
+
+  let admin;
+  try {
+    admin = createAdminClient();
+  } catch (e) {
+    return {
+      error: e instanceof Error ? e.message : "Server configuration error.",
+    };
+  }
+
+  let inserted = 0;
+  let updated = 0;
+  let page = 1;
+  const perPage = 200;
+
+  for (;;) {
+    const { data: pageData, error: listError } = await admin.auth.admin.listUsers({
+      page,
+      perPage,
+    });
+    if (listError) {
+      return { error: listError.message };
+    }
+    const users = pageData.users;
+    if (users.length === 0) break;
+
+    for (const u of users) {
+      const email = (u.email ?? "").trim();
+      const meta = u.user_metadata as Record<string, unknown> | undefined;
+      const fullName =
+        typeof meta?.full_name === "string" ? meta.full_name.trim() : "";
+      const staffReq = meta?.staff_signup === true;
+
+      const { data: row, error: fetchErr } = await admin
+        .from("profiles")
+        .select("id, email, full_name")
+        .eq("id", u.id)
+        .maybeSingle();
+
+      if (fetchErr) {
+        return { error: fetchErr.message };
+      }
+
+      if (!row) {
+        if (!email) {
+          continue;
+        }
+        const { error: insErr } = await admin.from("profiles").insert({
+          id: u.id,
+          email,
+          full_name: fullName || null,
+          role: "client" as UserRole,
+          staff_signup_requested: staffReq,
+          staff_approval_status: (staffReq ? "pending" : "none") as StaffApprovalStatus,
+        });
+        if (insErr) {
+          return { error: insErr.message };
+        }
+        inserted += 1;
+        continue;
+      }
+
+      const patch: { email?: string; full_name?: string | null } = {};
+      if (email && email !== row.email) {
+        patch.email = email;
+      }
+      if (fullName && fullName !== (row.full_name ?? "")) {
+        patch.full_name = fullName;
+      }
+      if (Object.keys(patch).length === 0) continue;
+
+      const { error: upErr } = await admin.from("profiles").update(patch).eq("id", u.id);
+      if (upErr) {
+        return { error: upErr.message };
+      }
+      updated += 1;
+    }
+
+    if (users.length < perPage) break;
+    page += 1;
+  }
+
+  revalidatePath("/admin");
+  return { inserted, updated };
 }
 
 export async function updateUserRole(

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import {
   Briefcase,
+  Import,
   Loader2,
   RefreshCw,
   Search as SearchIcon,
@@ -35,6 +36,7 @@ import { cn } from "@/lib/utils";
 import type { StaffApprovalStatus, UserRole } from "@/lib/types";
 import {
   listUsers,
+  syncProfilesFromAuth,
   updateUserRole,
   type ManagedUser,
   type UserListFilters,
@@ -98,7 +100,9 @@ export default function AdminUserManagement() {
   const [pendingRole, setPendingRole] = useState<UserRole>("client");
   const [isSaving, startSaving] = useTransition();
   const [isRefetching, startRefetch] = useTransition();
+  const [isSyncing, startSync] = useTransition();
   const [reloadTick, setReloadTick] = useState(0);
+  const [syncInfo, setSyncInfo] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -121,7 +125,24 @@ export default function AdminUserManagement() {
   }, [roleFilter, search, reloadTick]);
 
   const refresh = useCallback(() => {
+    setSyncInfo(null);
     startRefetch(() => {
+      setReloadTick((n) => n + 1);
+    });
+  }, []);
+
+  const syncFromAuth = useCallback(() => {
+    setSyncInfo(null);
+    setActionError(null);
+    startSync(async () => {
+      const res = await syncProfilesFromAuth();
+      if (res.error) {
+        setActionError(res.error);
+        return;
+      }
+      setSyncInfo(
+        `Synced from Auth: ${res.inserted ?? 0} new profile(s), ${res.updated ?? 0} updated.`,
+      );
       setReloadTick((n) => n + 1);
     });
   }, []);
@@ -132,7 +153,7 @@ export default function AdminUserManagement() {
     return () => clearTimeout(handle);
   }, [searchInput]);
 
-  const busy = loading || isRefetching;
+  const busy = loading || isRefetching || isSyncing;
 
   const stats = useMemo(() => {
     const totals = { total: rows.length, admin: 0, staff: 0, client: 0, pending: 0 };
@@ -193,17 +214,38 @@ export default function AdminUserManagement() {
             Browse all accounts and change roles. Only administrators see this page.
           </p>
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={refresh}
-          disabled={busy}
-        >
-          <RefreshCw className={cn("mr-2 h-4 w-4", busy && "animate-spin")} />
-          Refresh
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={syncFromAuth}
+            disabled={busy}
+            title="Create missing profile rows and update email / name from Supabase Auth"
+          >
+            {isSyncing ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Import className="mr-2 h-4 w-4" />
+            )}
+            Sync from Auth
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={refresh}
+            disabled={busy}
+          >
+            <RefreshCw className={cn("mr-2 h-4 w-4", (loading || isRefetching) && "animate-spin")} />
+            Refresh
+          </Button>
+        </div>
       </div>
+
+      {syncInfo ? (
+        <p className="mb-4 rounded-md border border-border bg-muted/50 px-4 py-2 text-sm text-foreground">{syncInfo}</p>
+      ) : null}
 
       {/* Stats */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">

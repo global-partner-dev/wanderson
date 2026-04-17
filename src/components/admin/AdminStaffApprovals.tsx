@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useTransition } from "react";
-import { Loader2, UserCheck, XCircle } from "lucide-react";
+import { Loader2, RefreshCw, UserCheck, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,19 +11,19 @@ import {
   rejectStaffSignup,
   type PendingStaffRow,
 } from "@/lib/staff-admin-actions";
+import { cn } from "@/lib/utils";
 
 export default function AdminStaffApprovals() {
   const [rows, setRows] = useState<PendingStaffRow[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refetching, setRefetching] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const refresh = useCallback(() => {
-    setLoading(true);
+  const fetchPending = useCallback(() => {
     setLoadError(null);
-    getPendingStaffRequests().then((res) => {
-      setLoading(false);
+    return getPendingStaffRequests().then((res) => {
       if (res.error) {
         setLoadError(res.error);
         return;
@@ -33,8 +33,15 @@ export default function AdminStaffApprovals() {
   }, []);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    fetchPending().finally(() => setLoading(false));
+  }, [fetchPending]);
+
+  const refresh = useCallback(() => {
+    setRefetching(true);
+    fetchPending().finally(() => setRefetching(false));
+  }, [fetchPending]);
+
+  const busy = loading || refetching;
 
   function handleApprove(id: string) {
     setActionError(null);
@@ -62,11 +69,23 @@ export default function AdminStaffApprovals() {
 
   return (
     <div className="view-tab custom-scroll flex min-h-0 flex-1 flex-col overflow-y-auto bg-background p-3 fade-in md:p-6">
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-foreground">Staff signup requests</h3>
-        <p className="text-sm text-muted-foreground">
-          Users who asked for staff access at signup need approval before they can use the backoffice.
-        </p>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Staff signup requests</h3>
+          <p className="text-sm text-muted-foreground">
+            Users who asked for staff access at signup need approval before they can use the backoffice.
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={refresh}
+          disabled={busy || isPending}
+        >
+          <RefreshCw className={cn("mr-2 h-4 w-4", refetching && "animate-spin")} />
+          Refresh
+        </Button>
       </div>
 
       {actionError ? (
@@ -81,7 +100,7 @@ export default function AdminStaffApprovals() {
           </CardDescription>
         </CardHeader>
         <CardContent className="custom-scroll flex min-h-0 flex-1 flex-col overflow-auto p-6 pt-0">
-          {loading ? (
+          {loading && rows.length === 0 ? (
             <div className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin" />
               Loading…
