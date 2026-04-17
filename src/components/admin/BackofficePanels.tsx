@@ -169,10 +169,10 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
                       <TableCell className="text-right">
                         <Button
                           type="button"
-                          variant="outline"
+                          variant="outline-primary"
                           size="sm"
                           onClick={() => setDetail("analise", true)}
-                          className="h-8 px-3 text-xs font-bold uppercase tracking-wide shadow-sm hover:border-primary/40 hover:text-primary"
+                          className="h-8 px-3 text-xs uppercase tracking-wide"
                         >
                           Review
                         </Button>
@@ -188,10 +188,10 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
           <aside className="custom-scroll flex w-full flex-col overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
             <Button
               type="button"
-              variant="outline"
+              variant="soft-secondary"
               size="sm"
               onClick={() => setDetail("analise", false)}
-              className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
+              className="mb-6 w-max gap-1.5 text-muted-foreground hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               Back
@@ -199,24 +199,13 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Lead</p>
             <h3 className="mt-1 text-xl font-semibold tracking-tight text-foreground">Roberto Carlos</h3>
             <div className="mt-8 space-y-2.5">
-              <Button
-                type="button"
-                className="h-11 w-full gradient-success border-0 text-sm font-semibold text-success-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 hover:shadow-lg active:translate-y-0"
-              >
+              <Button type="button" variant="success" size="lg" block>
                 Viable · schedule call
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 w-full border-warning/60 bg-warning/5 text-sm font-semibold text-warning shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-warning hover:bg-warning/10 hover:text-warning hover:shadow-md active:translate-y-0"
-              >
+              <Button type="button" variant="warning" size="lg" block>
                 Sell search
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 w-full border-destructive/50 bg-destructive/5 text-sm font-semibold text-destructive shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-destructive hover:bg-destructive/10 hover:text-destructive hover:shadow-md active:translate-y-0"
-              >
+              <Button type="button" variant="destructive" size="lg" block>
                 Not viable
               </Button>
             </div>
@@ -225,12 +214,7 @@ export default function BackofficePanels({ activeTab, detailOpen, setDetail, fin
             <h3 className="mb-6 text-base font-semibold text-foreground">Documents submitted</h3>
             <div className="card-shadow flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4">
               <span className="min-w-0 truncate text-sm font-medium text-foreground">Passaporte_Velho.jpg</span>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-8 shrink-0 px-3 text-xs font-semibold text-primary shadow-sm hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-              >
+              <Button type="button" variant="outline-primary" size="sm" className="h-8 shrink-0 px-3 text-xs">
                 View image
               </Button>
             </div>
@@ -502,10 +486,10 @@ function CitizenshipSection({
         <aside className="custom-scroll flex h-full w-full shrink-0 flex-col overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <Button
             type="button"
-            variant="outline"
+            variant="soft-secondary"
             size="sm"
             onClick={() => setDetail("cidadania", false)}
-            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back
@@ -523,9 +507,9 @@ function CitizenshipSection({
                 <SelectItem value="sworn">Sworn translation</SelectItem>
               </SelectContent>
             </Select>
-            <button type="button" className="w-full rounded-lg bg-foreground py-2.5 text-sm font-semibold text-background shadow-sm transition hover:opacity-95">
+            <Button type="button" variant="dark" size="lg" block>
               Save update
-            </button>
+            </Button>
           </div>
         </aside>
         <div className="flex min-w-0 flex-1 flex-col overflow-y-auto bg-background p-6 md:p-8">
@@ -622,10 +606,10 @@ function DocumentSearchSection({
         <aside className="custom-scroll w-full shrink-0 overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <Button
             type="button"
-            variant="outline"
+            variant="soft-secondary"
             size="sm"
             onClick={() => setDetail("busca", false)}
-            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back
@@ -643,9 +627,9 @@ function DocumentSearchSection({
                 <SelectItem value="report">Report issuance</SelectItem>
               </SelectContent>
             </Select>
-            <button type="button" className="w-full rounded-lg border border-warning/50 bg-background py-2.5 text-sm font-semibold text-warning shadow-sm transition hover:bg-warning/5">
+            <Button type="button" variant="warning" size="lg" block>
               Update client
-            </button>
+            </Button>
           </div>
         </aside>
         <div className="custom-scroll flex min-w-0 flex-1 flex-col bg-background p-6 md:p-8">
@@ -716,10 +700,10 @@ function TranslationSection({
         <aside className="custom-scroll w-full shrink-0 border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <Button
             type="button"
-            variant="outline"
+            variant="soft-secondary"
             size="sm"
             onClick={() => setDetail("traducao", false)}
-            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back
@@ -733,9 +717,9 @@ function TranslationSection({
               placeholder="Amount (BRL)"
               className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm shadow-sm"
             />
-            <button type="button" className="refer-btn-primary w-full py-2.5 text-sm">
+            <Button type="button" variant="primary" size="lg" block>
               Send quote
-            </button>
+            </Button>
           </div>
         </aside>
         <div className="min-w-0 flex-1 overflow-y-auto bg-background p-6 md:p-8">
@@ -808,10 +792,10 @@ function TranscriptionSection({
         <aside className="custom-scroll w-full shrink-0 overflow-y-auto border-b border-border bg-card p-6 shadow-sm md:w-[min(100%,18rem)] md:border-b-0 md:border-r lg:w-80">
           <Button
             type="button"
-            variant="outline"
+            variant="soft-secondary"
             size="sm"
             onClick={() => setDetail("transcricao", false)}
-            className="mb-6 w-max gap-1.5 text-muted-foreground shadow-sm hover:text-foreground"
+            className="mb-6 w-max gap-1.5 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back
@@ -828,9 +812,9 @@ function TranscriptionSection({
                 <SelectItem value="filed">Filed in Poland</SelectItem>
               </SelectContent>
             </Select>
-            <button type="button" className="w-full rounded-lg bg-success py-2.5 text-sm font-semibold text-success-foreground shadow-sm transition hover:opacity-95">
+            <Button type="button" variant="success" size="lg" block>
               Update client
-            </button>
+            </Button>
           </div>
         </aside>
         <div className="min-w-0 flex-1 overflow-y-auto bg-background p-6 md:p-8">
