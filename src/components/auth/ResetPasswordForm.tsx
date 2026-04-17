@@ -10,7 +10,11 @@ import { Label } from "@/components/ui/label";
 import { AuthBanner } from "@/components/ui/auth-banner";
 import { resetPassword } from "@/lib/auth-actions";
 
-export default function ResetPasswordForm() {
+type Props = {
+  initialFullName?: string;
+};
+
+export default function ResetPasswordForm({ initialFullName = "" }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,6 +27,12 @@ export default function ResetPasswordForm() {
 
     const password = formData.get("password") as string;
     const confirm = formData.get("confirm") as string;
+    const fullName = ((formData.get("full_name") as string) ?? "").trim();
+
+    if (fullName.length > 0 && fullName.length < 2) {
+      setError("Please enter your full name.");
+      return;
+    }
 
     if (password !== confirm) {
       setError("Passwords do not match.");
@@ -100,6 +110,18 @@ export default function ResetPasswordForm() {
             </div>
           ) : (
             <form action={handleSubmit} className="mt-8 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="reset-fullname">Full name</Label>
+                <Input
+                  id="reset-fullname"
+                  name="full_name"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="Your full name"
+                  defaultValue={initialFullName}
+                  minLength={2}
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="reset-password">New password</Label>
                 <div className="relative">

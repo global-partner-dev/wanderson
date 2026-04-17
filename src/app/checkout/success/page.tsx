@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { CheckCircle2, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/server";
 import { formatBRL } from "@/lib/ecommerce/types";
@@ -19,7 +18,6 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
   let amountLabel = "";
   let email = "";
   let orderId: string | null = null;
-  let inviteToken: string | null = null;
 
   if (session_id) {
     try {
@@ -45,15 +43,6 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
       if (!amountLabel && order.amount_total_cents != null) {
         amountLabel = formatBRL(order.amount_total_cents as number);
       }
-
-      const { data: invite } = await supabase
-        .from("invitations")
-        .select("token, claimed_at")
-        .eq("order_id", order.id)
-        .is("claimed_at", null)
-        .order("created_at", { ascending: false })
-        .maybeSingle();
-      if (invite?.token) inviteToken = invite.token as string;
     }
   }
 
@@ -78,29 +67,28 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
           <div className="flex items-start gap-3">
             <Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
             <div className="min-w-0">
-              <h2 className="text-sm font-bold text-foreground">Next step: create your account</h2>
+              <h2 className="text-sm font-bold text-foreground">
+                Check your email to activate your account
+              </h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 {email ? (
-                  <>We will send an invitation to <span className="font-semibold text-foreground">{email}</span>. Follow the link to set a password and access your client portal.</>
+                  <>
+                    We just sent an invitation to{" "}
+                    <span className="font-semibold text-foreground">{email}</span>.
+                    Click the link in that email to set a password and open your
+                    client portal.
+                  </>
                 ) : (
-                  <>We will email you a secure invitation link to create your client account.</>
+                  <>
+                    We just sent an invitation email. Click the link in that email
+                    to set a password and open your client portal.
+                  </>
                 )}
               </p>
-
-              {inviteToken ? (
-                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                  <Button asChild className="gradient-primary border-0 text-primary-foreground">
-                    <Link href={`/invite/${inviteToken}`}>
-                      Open invitation now <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              ) : (
-                <p className="mt-4 rounded-md border border-dashed border-border bg-muted/40 p-3 text-xs text-muted-foreground">
-                  The invitation will appear here as soon as the payment webhook is
-                  processed. You can safely close this page and wait for the email.
-                </p>
-              )}
+              <p className="mt-3 rounded-md border border-dashed border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+                Tip: the invitation can take up to a minute to arrive. If you don't
+                see it, check the spam folder.
+              </p>
             </div>
           </div>
         </div>

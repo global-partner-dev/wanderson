@@ -89,14 +89,31 @@ export async function forgotPassword(formData: FormData) {
 export async function resetPassword(formData: FormData) {
   const supabase = await createClient();
   const password = formData.get("password") as string;
+  const fullNameRaw = formData.get("full_name");
+  const fullName =
+    typeof fullNameRaw === "string" ? fullNameRaw.trim() : "";
 
-  const { error } = await supabase.auth.updateUser({ password });
-
+  // Update password (and optionally full name) on the auth user.
+  const { data: updated, error } = await supabase.auth.updateUser({
+    password,
+    data: fullName.length > 0 ? { full_name: fullName } : undefined,
+  });
   if (error) {
     return { error: error.message };
   }
 
-  return { success: "Password updated successfully." };
+  // Mirror full_name into the profiles row so the rest of the app sees it.
+  if (fullName.length > 0 && updated.user?.id) {
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ full_name: fullName })
+      .eq("id", updated.user.id);
+    if (profileError) {
+      console.error("profile full_name update failed:", profileError.message);
+    }
+  }
+
+  return { success: "Account updated successfully." };
 }
 
 export async function logout() {

@@ -1,8 +1,10 @@
 // Supabase Edge Function: Stripe webhook receiver.
 //
 // Verifies Stripe signatures, upserts an `orders` row, and for ecommerce
-// purchases generates a single-use `invitations` token so the buyer can
-// claim their account at `${SITE_URL}/invite/[token]`.
+// purchases triggers Supabase's built-in invitation email so the buyer can
+// claim their account. The invitation link in the email goes through
+// Supabase's own auth flow (same pipeline as "Confirm signup" / "Reset
+// password" emails) and lands the user on `${SITE_URL}/auth/callback`.
 //
 // Required environment secrets (set with `supabase secrets set ...`):
 //   STRIPE_SECRET_KEY          sk_test_... or sk_live_...
@@ -10,6 +12,11 @@
 //   SUPABASE_URL               auto-populated inside functions runtime
 //   SUPABASE_SERVICE_ROLE_KEY  auto-populated inside functions runtime
 //   SITE_URL                   https://yourdomain.com (for invitation links)
+//
+// IMPORTANT: in your Supabase project, add the redirect URL to the allow
+// list under Authentication → URL Configuration → Redirect URLs:
+//   ${SITE_URL}/auth/callback
+//   ${SITE_URL}/auth/callback?next=/reset-password
 //
 // Subscribed events (configure the same list in the Stripe Dashboard):
 //   checkout.session.completed
@@ -54,13 +61,23 @@ function json(body: unknown, init: ResponseInit = {}) {
   });
 }
 
-function generateToken(len = 32): string {
-  const bytes = new Uint8Array(len);
-  crypto.getRandomValues(bytes);
-  return btoa(String.fromCharCode(...bytes))
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/g, "");
+async function findUserByEmail(email: string) {
+  // listUsers does not support an email filter; we paginate and match locally.
+  // For projects with > 1 page of users this could be replaced with a
+  // dedicated lookup once the Supabase Admin API exposes one.
+  const lowered = email.toLowerCase();
+  const { data, error } = await supabase.auth.admin.listUsers({
+    page: 1,
+    perPage: 200,
+  });
+  if (error) {
+    console.error("listUsers failed", error.message);
+    return null;
+  }
+  return (
+    data.users.find((u: any) => (u.email ?? "").toLowerCase() === lowered) ??
+    null
+  );
 }
 
 async function findProductIdBySlug(slug: string | undefined | null) {
@@ -129,13 +146,7 @@ async function upsertOrderFromSession(session: any) {
 
   // If the paying user already has an auth account, link it so RLS gives them access.
   if (!row.user_id) {
-    const { data: existing } = await supabase.auth.admin
-      .listUsers({ page: 1, perPage: 200 })
-      .then((r) => r)
-      .catch(() => ({ data: { users: [] } as any }));
-    const hit = (existing as any)?.users?.find(
-      (u: any) => (u.email ?? "").toLowerCase() === email.toLowerCase(),
-    );
+    const hit = await findUserByEmail(email);
     if (hit?.id) {
       await supabase.from("orders").update({ user_id: hit.id }).eq("id", order.id);
     }
@@ -144,68 +155,102 @@ async function upsertOrderFromSession(session: any) {
   return order;
 }
 
-async function createInvitationForOrder(
+async function logInvitation(
   orderId: string,
   email: string,
   fullName: string | null,
 ) {
-  // Re-use any unclaimed invitation for this order so the Stripe CLI's
-  // repeated event deliveries don't spam fresh tokens.
+  // Records the fact we asked Supabase to send an invite. Used by the admin
+  // panel so staff can see who has an outstanding invitation. The token
+  // column is required (unique not-null) but is no longer used to claim
+  // accounts — Supabase's own auth token in the email is what authenticates.
   const { data: existing } = await supabase
     .from("invitations")
-    .select("token, claimed_at, expires_at")
+    .select("id")
     .eq("order_id", orderId)
     .is("claimed_at", null)
     .order("created_at", { ascending: false })
     .maybeSingle();
-  if (existing?.token) {
-    return existing.token as string;
-  }
+  if (existing?.id) return;
 
-  const token = generateToken(32);
   const expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 14).toISOString();
-
   const { error } = await supabase.from("invitations").insert({
-    token,
+    token: crypto.randomUUID(),
     order_id: orderId,
     email: email.toLowerCase(),
     full_name: fullName,
     expires_at: expires,
   });
+  if (error) console.error("invitations insert failed", error.message);
+}
+
+async function sendSupabaseInvitation(
+  email: string,
+  fullName: string | null,
+  orderId: string,
+) {
+  // Use Supabase's own invitation pipeline so the email is sent through the
+  // project's configured SMTP (or the built-in dev mailer for testing).
+  // After the buyer clicks the link, the auth gateway exchanges the token,
+  // /auth/callback creates a session, and they land on /reset-password to
+  // pick a password before entering /portal.
+  const redirectTo = `${siteUrl}/auth/callback?next=/reset-password`;
+
+  const { data, error } = await supabase.auth.admin.inviteUserByEmail(email, {
+    redirectTo,
+    data: {
+      full_name: fullName ?? "",
+      source: "ecommerce_order",
+      order_id: orderId,
+    },
+  });
   if (error) {
-    console.error("invitations insert failed", error.message);
+    console.error(
+      `inviteUserByEmail failed for ${email}:`,
+      error.message,
+    );
     return null;
   }
-  return token;
+  console.log(
+    `invitation email queued for ${email} (user=${data.user?.id}, order=${orderId})`,
+  );
+  return data.user;
 }
 
 async function handleCheckoutCompleted(session: any) {
   const order = await upsertOrderFromSession(session);
   if (!order) return;
 
-  // Only issue an invitation when the buyer does NOT already have an account
-  // linked to this order. Existing customers can see it in their portal.
+  // Re-fetch so we observe any user_id that upsertOrderFromSession may have linked.
   const { data: refreshed } = await supabase
     .from("orders")
     .select("id, user_id, customer_email, customer_name, status")
     .eq("id", order.id)
     .single();
   if (!refreshed) return;
-
   if (refreshed.status !== "paid") return;
-  if (refreshed.user_id) return;
+  if (refreshed.user_id) return; // existing account already attached
 
-  const token = await createInvitationForOrder(
+  const email = ((refreshed.customer_email as string) ?? "").toLowerCase();
+  if (!email) return;
+  const fullName = (refreshed.customer_name as string | null) ?? null;
+
+  const invited = await sendSupabaseInvitation(
+    email,
+    fullName,
     refreshed.id as string,
-    (refreshed.customer_email as string) ?? "",
-    (refreshed.customer_name as string | null) ?? null,
   );
 
-  if (token) {
-    console.log(
-      `invitation ready: ${siteUrl}/invite/${token}  (order=${refreshed.id})`,
-    );
+  if (invited?.id) {
+    // Link the order to the freshly-created auth user immediately so the
+    // client portal sees the purchase as soon as they sign in.
+    await supabase
+      .from("orders")
+      .update({ user_id: invited.id })
+      .eq("id", refreshed.id as string);
   }
+
+  await logInvitation(refreshed.id as string, email, fullName);
 }
 
 async function markSessionFailed(session: any) {
